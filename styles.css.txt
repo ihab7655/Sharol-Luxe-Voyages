@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(to bottom, #000, #7a5a20);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🔥 رأس الموقع */
+header {
+    position: relative;
+    background: url('https://i.imgur.com/8LvIH6w.png') center/cover no-repeat, black;
+    padding: 15px;
+    margin: 10px auto;
+    width: 90%;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 3px solid #f7b733;
+    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.8);
+    overflow: hidden;
+}
+
+.header-icons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.header-icon {
+    font-size: 24px;
+    color: #f7b733;
+}
+
+.logo-container {
+    position: relative;
+    z-index: 3;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0px 0px 15px rgba(255, 215, 0, 1), 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.logo span {
+    color: #f7b733;
+}
+
+.hero-logo {
+    width: 120px;
+    display: block;
+    margin: 0 auto 15px;
+}
+
+.hero h1 {
+    font-size: 28px;
+    color: #f7b733;
+    text-shadow: 0px 0px 12px rgba(255, 215, 0, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.gold-line {
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(to right, #cfa200, #f7b733, #cfa200);
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+/* ✅ قسم الخدمات */
+.services {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
+}
+
+.services h2 {
+    color: #d4a017;
+    font-size: 24px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 10px;
+}
+
+.service-item {
+    background: rgba(255, 215, 0, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.service-item i {
+    font-size: 40px;
+    color: #d4a017;
+    margin-bottom: 10px;
+}
+
+/* ✅ تذييل الصفحة */
+footer {
+    position: relative;
+    background: black;
+    background-image: url('https://i.imgur.com/8LvIH6w.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
+    border-top: 2px solid #f7b733;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    pointer-events: none;
+}
+
+footer * {
+    position: relative;
+    z-index: 2;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-section {
+    width: 30%;
+    min-width: 220px;
+}
+
+.footer-section h3 {
+    color: #f7b733;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.footer-section p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.footer-section a {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-section a:hover {
+    color: #f7b733;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.social-icon {
+    font-size: 20px;
+    color: white;
+    transition: 0.3s;
+}
+
+.social-icon:hover {
+    color: #f7b733;
+}
+
+.footer-bottom {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #f7b733;
+    font-size: 14px;
+}
+
+iframe {
+    border: 0;
+    border-radius: 10px;
+}
+
+/* استعلام الوسائط لشاشات المحمول */
+@media (max-width: 600px) {
+    .footer-container {
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .footer-section {
+        width: 45%;
+        min-width: 150px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    iframe {
+        width: 90%;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+}
