@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharol Luxe Voyages</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- ملف CSS الخارجي -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- رأس الموقع -->
+    <header>
+        <div class="overlay"></div> 
+        <div class="header-icons">
+            <i class="fas fa-globe header-icon"></i>
+            <i class="fas fa-plane-departure header-icon"></i>
+        </div>
+        <div class="logo-container">
+            <div class="logo">SHAROL <span>LUX</span> VOYAGES</div>
+        </div>
+    </header>
+
+    <!-- قسم البطاقة الرئيسية -->
+    <section class="hero">
+        <img src="https://i.imgur.com/cJqPFRb.png" alt="Sharol Luxe Voyages Logo" class="hero-logo">
+        <h1><i class="fas fa-trophy"></i> رحلتك تبدأ هنا، خطوة واحدة نحو العالم! <i class="fas fa-trophy"></i></h1>
+        <div class="gold-line"></div>
+    </section>
+
+    <!-- قسم الخدمات -->
+    <section class="services">
+        <h2>خدماتنا</h2>
+        <div class="service-grid" id="serviceGrid"></div> <!-- يتم ملؤه بواسطة JavaScript -->
+    </section>
+
+    <!-- تذييل الموقع -->
+    <footer>
+        <div class="footer-container">
+            <!-- 🏢 عنوان الشركة -->
+            <div class="footer-section">
+                <h3>📍 عنوان الشركة</h3>
+                <p>الدار البيضاء، المغرب</p>
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.7434379425126!2d-7.618822684801038!3d33.573110680738254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7cd9b4e4f72f9%3A0xa9d66f271c3b5d35!2sCasablanca%2C%20Morocco!5e0!3m2!1sen!2sus!4v1647328360836!5m2!1sen!2us" 
+                    width="200" 
+                    height="120" 
+                    style="border:0; border-radius: 10px;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <!-- 📞 معلومات الاتصال -->
+            <div class="footer-section">
+                <h3>📞 تواصل معنا</h3>
+                <h3><i class="fas fa-envelope"></i> <a href="mailto:info@sharol.online">info@sharol.online</a></h3>
+                <h3><i class="fas fa-phone-alt"></i> <a href="tel:+212705956662">+212 705 956 662</a></h3>
+                <h3><i class="fas fa-globe"></i> <a href="https://www.sharol.online" target="_blank">www.sharol.online</a></h3>
+            </div>
+
+            <!-- 🌍 وسائل التواصل الاجتماعي -->
+            <div class="footer-section">
+                <h3>تابعنا على</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/212705956662" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- حقوق النشر -->
+        <div class="footer-bottom">
+            <h3>© 2024 Sharol Luxe Voyages. جميع الحقوق محفوظة.</h3>
+        </div>
+    </footer>
+
+    <!-- ربط ملف JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>
