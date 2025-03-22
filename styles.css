@@ -79,6 +79,26 @@ header {
     border-radius: 2px;
 }
 
+      /* يمكنك أيضاً تضمين بعض التنسيقات الإضافية هنا للزر الجديد */
+      .registration-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 25px;
+        background: gold;
+        color: #000;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        box-shadow: 0 0 10px gold;
+        transition: background 0.3s ease;
+      }
+      .registration-btn:hover {
+        background: darkgoldenrod;
+      }
+
+
 /* ✅ قسم الخدمات */
 .services {
     background: rgba(0, 0, 0, 0.8);
