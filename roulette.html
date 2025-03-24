@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>روليت بطبقتين مع تحكم أدمن وعدّ تنازلي</title>
+  <style>
+    /* تعريف المتغيرات العامة */
+    :root {
+      --gold-color: gold;
+      --dark-gold: darkgoldenrod;
+      --bg-gradient-start: #222;
+      --bg-gradient-end: #000;
+      --header-height-desktop: 400px;
+      --header-height-mobile: 200px;
+      --wheel-size: 350px;
+      --wheel-border-width: 10px;
+      --inner-border-width: 6px;
+      --transition-duration-wheel: 10s;
+      --transition-duration-ball: 20s;
+      --highlight-interval: 800ms;
+    }
+
+    /* رأس الموقع باستخدام الصورة */
+    header.site-header {
+      width: 100%;
+      height: var(--header-height-desktop);
+      background: url("https://i.imgur.com/mDOZCYN.jpeg") no-repeat center center;
+      background-size: cover;
+    }
+    
+    /* إعدادات خاصة بالجوال لرأس الموقع */
+    @media (max-width: 768px) {
+      header.site-header {
+        height: var(--header-height-mobile);
+      }
+    }
+    
+    /* تنسيقات الصفحة العامة */
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: #fff;
+      font-family: Arial, sans-serif;
+      box-sizing: border-box;
+    }
+    
+    /* تنسيق المحتوى الرئيسي */
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - var(--header-height-desktop));
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    
+    /* ==== تنسيقات لعبة الروليت ==== */
+    .roulette-container {
+      position: relative;
+      width: var(--wheel-size);
+      height: var(--wheel-size);
+    }
+    
+    /* تأثير البرق فوق عجلة الروليت */
+    #lightningOverWheel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.imgur.com/e2xmo9q.jpeg') no-repeat center center / contain;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 6;
+    }
+    #lightningOverWheel.active {
+      animation: lightningFlashWheel 1s ease-out;
+    }
+    @keyframes lightningFlashWheel {
+      0% { opacity: 0; transform: scale(1); }
+      30% { opacity: 1; transform: scale(1.1); }
+      60% { opacity: 0.8; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+    
+    /* نافذة الفوز تظهر على رأس الموقع */
+    .win-popup {
+      position: fixed;
+      top: 10px; /* تظهر بالقرب من أعلى الصفحة */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: var(--gold-color);
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 24px;
+      display: none;
+      z-index: 1000;
+      text-align: center;
+    }
+    
+    /* تحسين العرض على شاشات الجوال */
+    @media (max-width: 768px) {
+      .win-popup {
+        top: 10px;
+        font-size: 18px;
+        padding: 10px 20px;
+      }
+    }
+    
+ @keyframes spinLogo {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.wheel-logo {
+  position: absolute;
+  top: 51%;
+  left: 51%;
+  width: 225px;         /* قم بتعديل الحجم حسب الحاجة */
+  height: 225px;
+  border-radius: 50%;
+  opacity: 0.8;        /* لضبط الشفافية */
+  z-index: 5;
+  /* تطبيق الأنيميشن: المدة 20 ثانية، خطية، وتتكرر إلى ما لا نهاية */
+  animation: spinLogo 20s linear infinite;
+}
+
+ 
+    
+    
+    .wheel {
+      width: 97%;
+      height: 97%;
+      border-radius: 50%;
+      background: radial-gradient(circle, #444 60%, #111);
+      overflow: hidden;
+      border: var(--wheel-border-width) solid var(--gold-color);
+      box-shadow: 0 0 20px var(--gold-color), 0 0 50px rgba(255,215,0,0.8);
+      transition: transform 4s ease-out;
+      position: relative;
+    }
+    
+    .inner-border {
+      position: absolute;
+      width: 83%;
+      height: 83%;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      border: var(--inner-border-width) solid var(--gold-color);
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    
+    .numbers {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 3;
+    }
+    
+    .number {
+      position: absolute;
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+    
+    /* تنسيق النص داخل الأرقام */
+    .number-text {
+      display: inline-block;
+      transition: transform 0.3s ease, color 0.3s ease;
+      transform-origin: center center;
+      font-size: 16px;
+    }
+    
+    .ball {
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 4s ease-out;
+      box-shadow: 0 0 10px #fff;
+      z-index: 4;
+    }
+    
+    /* زر التشغيل */
+    .spin-container {
+      height: 60px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #spin {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: var(--gold-color);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 0 10px var(--gold-color);
+      display: none;
+    }
+    #spin:hover {
+      background: var(--dark-gold);
+    }
+    
+    /* نصوص العد والتخصيص */
+    #customText, #countdown, #winner-container {
+      text-align: center;
+      margin: 10px 0;
+    }
+    #customText {
+      font-size: 16px;
+      color: var(--gold-color);
+    }
+    #countdown, #winner-container {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--gold-color);
+      min-height: 30px;
+    }
+    
+    /* حاوية الأرقام المختارة */
+    .container {
+      margin: 0 auto;
+      padding: 10px;
+      text-align: center;
+      width: 95%;
+      box-sizing: border-box;
+    }
+    
+    h1 {
+      margin: 10px 0;
+      color: var(--gold-color);
+      text-shadow: 0 0 10px var(--gold-color);
+      font-size: 20px;
+    }
+    
+    p {
+      font-size: 14px;
+      color: #bbb;
+      margin: 5px 0;
+    }
+    
+    /* تنسيق الشبكات للأرقام على الشاشات الكبيرة */
+    @media (min-width: 769px) {
+      .outer-grid,
+      .inner-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin: 10px auto;
+        padding: 0;
+        max-width: 90%;
+      }
+      .outer-grid .cell,
+      .inner-grid .cell {
+        padding: 15px;
+        font-size: 18px;
+        min-width: 60px;
+      }
+    }
+    
+    /* تنسيق الشبكات على الشاشات الصغيرة باستخدام Grid */
+    @media (max-width: 768px) {
+      .outer-grid,
+      .inner-grid {
+        display: grid;
+        grid-template-columns: repeat(4, auto);
+        gap: 8px;
+        justify-content: center;
+        justify-items: center;
+      }
+      .inner-grid {
+        margin-top: 20px;
+      }
+      .cell {
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+        background: #000;
+        border: 2px solid var(--gold-color);
+        border-radius: 8px;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(255,255,255,0.6);
+        transition: all 0.3s ease-in-out;
+        min-width: 48px;
+        position: relative;
+      }
+      .cell.red {
+        color: red;
+        box-shadow: 0 0 6px rgba(255,0,0,0.6);
+      }
+      .cell.green {
+        color: lime;
+        box-shadow: 0 0 8px rgba(0,255,0,0.8);
+      }
+      .cell:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px rgba(255,255,0,0.8);
+      }
+      .cell.reserved {
+        cursor: not-allowed;
+        background: #333;
+        color: gray !important;
+        border-color: #777 !important;
+        box-shadow: none;
+      }
+      .cell.reserved::after {
+        content: "❌";
+        position: absolute;
+        font-size: 1.2rem;
+        top: 0;
+        right: 0;
+        transform: translate(20%, -20%);
+      }
+      .number-text.highlight {
+        transform: scale(1.2);
+        color: var(--gold-color) !important;
+        text-shadow: 0 0 5px var(--gold-color);
+      }
+      .number-text.winning {
+        transform: scale(1.4);
+        color: var(--gold-color) !important;
+        text-shadow: 0 0 8px var(--gold-color);
+        z-index: 2;
+      }
+    }
+    
+    /* تنسيق الأزرار في الشبكات على الشاشات الكبيرة */
+    .outer-grid .cell,
+    .inner-grid .cell {
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      background: #000;
+      border: 2px solid var(--gold-color);
+      border-radius: 8px;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255,255,255,0.6);
+      transition: all 0.3s ease-in-out;
+      min-width: 48px;
+      position: relative;
+      margin: 0;
+    }
+    .outer-grid .cell.red,
+    .inner-grid .cell.red {
+      color: red;
+      box-shadow: 0 0 6px rgba(255,0,0,0.6);
+    }
+    .outer-grid .cell.green,
+    .inner-grid .cell.green {
+      color: lime;
+      box-shadow: 0 0 8px rgba(0,255,0,0.8);
+    }
+    .outer-grid .cell:hover,
+    .inner-grid .cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(255,255,0,0.8);
+    }
+    .outer-grid .cell.reserved,
+    .inner-grid .cell.reserved {
+      cursor: not-allowed;
+      background: #333;
+      color: gray !important;
+      border-color: #777 !important;
+      box-shadow: none;
+    }
+    .outer-grid .cell.reserved::after,
+    .inner-grid .cell.reserved::after {
+      content: "❌";
+      position: absolute;
+      font-size: 1.2rem;
+      top: 0;
+      right: 0;
+      transform: translate(20%, -20%);
+    }
+    
+    /* تنسيق التذييل بتأثير 3D فاخر */
+    footer {
+      background: linear-gradient(135deg, #111, #333);
+      color: var(--gold-color);
+      text-align: center;
+      padding: 20px 0;
+      font-size: 20px;
+      border-top: 3px solid var(--gold-color);
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+      transform: perspective(500px) rotateX(3deg);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+      margin-top: 40px;
+    }
+    
+    /* تنسيق زر إعادة التوجيه للتسجيل للزائر */
+    .registration-redirect {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .registration-redirect button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background: var(--gold-color);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 0 10px var(--gold-color);
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .registration-redirect button:hover {
+      background: var(--dark-gold);
+    }
+  </style>
+</head>
+<body>
+  <!-- بداية رأس الموقع -->
+  <header class="site-header">
+    <!-- محتوى الرأس إن رغبت -->
+  </header>
+  
+  <!-- نافذة الفوز تظهر على رأس الموقع -->
+  <div id="winPopup" class="win-popup"></div>
+  
+  <!-- المحتوى الرئيسي للعبة الروليت -->
+  <main>
+    <!-- حاوية الروليت -->
+    <div class="roulette-container">
+     <img src="https://i.imgur.com/cOjG0JM.jpeg" alt="Logo" class="wheel-logo">
+      <div class="wheel" id="wheel">
+        <div class="numbers numbers-outer"></div>
+        <div class="numbers numbers-inner"></div>
+        <div class="inner-border"></div>
+      </div>
+      <div class="ball" id="ball"></div>
+      <!-- تأثير البرق فوق عجلة الروليت -->
+      <div id="lightningOverWheel"></div>
+    </div>
+    
+    <!-- زر تشغيل العجلة (يظهر فقط لوضع الأدمن) -->
+    <div class="spin-container">
+      <button id="spin">تشغيل العجلة</button>
+    </div>
+    
+    <!-- زر إعادة التوجيه إلى صفحة التسجيل للزائر -->
+    <div class="registration-redirect" id="registrationRedirect" style="display: none;">
+      <button onclick="window.location.href='registration.html'">التسجيل للمشاركة</button>
+    </div>
+    
+    <!-- العد التنازلي والنصوص المخصصة -->
+    <p id="countdown"></p>
+    <p id="customText">هنا يمكنك كتابة النص الذي تريده</p>
+    <p id="winner-container"></p>
+    
+    <!-- الشبكتين الخارجية والداخلية لاختيار الأرقام -->
+    <div class="container">
+      <h1>اختر رقمك</h1>
+      <div class="outer-grid" id="outerGrid"></div>
+      <div class="inner-grid" id="innerGrid"></div>
+      <p>الأرقام المحجوزة تتحول إلى اللون الرمادي مع علامة ❌</p>
+    </div>
+  </main>
+  
+  <!-- التذييل بتأثير 3D فاخر -->
+  <footer>
+    جميع الحقوق محفوظة Sharol Luxe Voyages 2025
+  </footer>
+  
+  <!-- تضمين ملفات الصوت الخارجية -->
+  <!-- ملف صوت دوران العجلة -->
+  <audio id="spinSound">
+    <source src="https://od.lk/s/MjhfNDAyODM2MjJf/roulette_casino_evianaif-14446_1.mp3" type="audio/mpeg">
+    متصفحك لا يدعم تشغيل الصوت.
+  </audio>
+  <!-- ملف صوت الفوز -->
+  <audio id="winSound">
+    <source src="https://od.lk/s/MjhfNDAyODM1Mzhf/publico2-4824-169502.mp3" type="audio/mpeg">
+    متصفحك لا يدعم تشغيل الصوت.
+  </audio>
+  
+  <script>
+    /**************************************************
+     * (1) إعدادات الأدمن والتهيئة
+     **************************************************/
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdmin = urlParams.get('admin') === '1';
+    const spinBtn = document.getElementById('spin');
+    if (!isAdmin) {
+      document.getElementById('registrationRedirect').style.display = 'block';
+    } else {
+      spinBtn.style.display = 'block';
+    }
+    const autoSpinEnabled = true;
+    
+    /**************************************************
+     * (2) إعداد العد التنازلي
+     **************************************************/
+    // مثال: 1 مايو 2025 الساعة 1:00
+    const targetDate = new Date(2025, 2, 1, 1, 0, 0).getTime();
+    const countdownEl = document.getElementById('countdown');
+    
+    const countdownTimer = setInterval(() => {
+      const now = Date.now();
+      const distance = targetDate - now;
+      if (distance <= 0) {
+        clearInterval(countdownTimer);
+        countdownEl.textContent = 'true';
+        if (autoSpinEnabled) spinRoulette();
+      } else {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        countdownEl.textContent = `تبقى ${days} يوم و${hours} ساعة و${minutes} دقيقة و${seconds} ثانية`;
+      }
+    }, 1000);
+    
+    /**************************************************
+     * (3) بيانات العجلة والأرقام
+     **************************************************/
+    const rouletteNumbersOuter = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+    const rouletteNumbersInner = [49,45,40,52,46,59,55,61,50,53,44,63,42,60,57,43,58,41,48,62,39,47,64,51,38,56,66,65,68,54,67,69,71,70,72,74,73];
+    
+    const numbersOuterContainer = document.querySelector('.numbers-outer');
+    rouletteNumbersOuter.forEach((num, i) => {
+      const angle = i * (360 / rouletteNumbersOuter.length);
+      const numberDiv = document.createElement('div');
+      numberDiv.classList.add('number');
+      numberDiv.style.transform = `rotate(${angle}deg) translate(158px) rotate(-${angle}deg)`;
+    
+      const span = document.createElement('span');
+      span.classList.add('number-text');
+      span.textContent = num;
+    
+      const colorPattern = [
+        "green","red","white","red","white","red","white","red","white","red",
+        "white","red","white","red","white","red","white","red","white","red",
+        "white","red","white","red","white","red","white","red","white","red",
+        "white","red","white","red","white","red","white"
+      ];
+      span.style.color = colorPattern[i] || 'white';
+    
+      numberDiv.appendChild(span);
+      numbersOuterContainer.appendChild(numberDiv);
+    });
+    
+    const numbersInnerContainer = document.querySelector('.numbers-inner');
+    rouletteNumbersInner.forEach((num, i) => {
+      const angle = i * (360 / rouletteNumbersInner.length);
+      const numberDiv = document.createElement('div');
+      numberDiv.classList.add('number');
+      numberDiv.style.transform = `rotate(${angle}deg) translate(128px) rotate(-${angle}deg)`;
+    
+      const span = document.createElement('span');
+      span.classList.add('number-text');
+      span.textContent = num;
+    
+      const colorPattern = [
+        "green","red","white","red","white","red","white","red","white","red",
+        "white","red","white","red","white","red","white","red","white","red",
+        "white","red","white","red","white","red","white","red","white","red",
+        "white","red","white","red","white","red","white"
+      ];
+      span.style.color = colorPattern[i] || 'white';
+    
+      numberDiv.appendChild(span);
+      numbersInnerContainer.appendChild(numberDiv);
+    });
+    
+    const wheel = document.getElementById('wheel');
+    const ball = document.getElementById('ball');
+    
+    spinBtn.addEventListener('click', () => spinRoulette());
+    
+    /**************************************************
+     * (4) إنشاء الشبكتين الخارجية والداخلية للأرقام
+     **************************************************/
+    const outerGrid = document.getElementById('outerGrid');
+    const innerGrid = document.getElementById('innerGrid');
+    
+    rouletteNumbersOuter.forEach((num, i) => {
+      outerGrid.appendChild(createCell(num, i, true));
+    });
+    rouletteNumbersInner.forEach((num, i) => {
+      innerGrid.appendChild(createCell(num, i, false));
+    });
+    
+    function createCell(number, index, isOuter) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.textContent = number;
+      if (number === 0 || number === 49) {
+        cell.classList.add('green');
+      } else if (index % 2 === 0) {
+        cell.classList.add('red');
+      }
+      cell.addEventListener('click', () => {
+        if (cell.classList.contains('reserved')) {
+          alert('هذا الرقم محجوز بالفعل!');
+          return;
+        }
+        cell.classList.add('reserved');
+      });
+      return cell;
+    }
+    
+    /**************************************************
+     * (5) تناوب الإضاءة على الأرقام
+     **************************************************/
+    let outerSpans = [];
+    let innerSpans = [];
+    let idxOuter = 0;
+    let idxInner = 0;
+    let highlightTimer = null;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      outerSpans = Array.from(document.querySelectorAll('.numbers-outer .number-text'));
+      innerSpans = Array.from(document.querySelectorAll('.numbers-inner .number-text'));
+      startHighlightCycle();
+    });
+    
+    function startHighlightCycle() {
+      stopHighlightCycle();
+      highlightTimer = setInterval(() => {
+        if (outerSpans[idxOuter]) outerSpans[idxOuter].classList.remove('highlight');
+        if (innerSpans[idxInner]) innerSpans[idxInner].classList.remove('highlight');
+        idxOuter = (idxOuter + 1) % outerSpans.length;
+        idxInner = (idxInner + 1) % innerSpans.length;
+        outerSpans[idxOuter].classList.add('highlight');
+        innerSpans[idxInner].classList.add('highlight');
+      }, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--highlight-interval')));
+    }
+    
+    function stopHighlightCycle() {
+      if (highlightTimer) {
+        clearInterval(highlightTimer);
+        highlightTimer = null;
+      }
+      if (outerSpans[idxOuter]) outerSpans[idxOuter].classList.remove('highlight');
+      if (innerSpans[idxInner]) innerSpans[idxInner].classList.remove('highlight');
+    }
+    
+    /**************************************************
+     * (6) دالة تدوير العجلة (spinRoulette)
+     **************************************************/
+    function spinRoulette() {
+      stopHighlightCycle();
+      const baseSpin = 9000;
+      const randomExtra = Math.floor(Math.random() * 360);
+      const spinAngle = baseSpin + randomExtra;
+      const isOuter = Math.random() > 0.5;
+      const randomIndex = Math.floor(Math.random() * rouletteNumbersOuter.length);
+      const winningNumber = isOuter ? rouletteNumbersOuter[randomIndex] : rouletteNumbersInner[randomIndex];
+      const ballAngle = randomIndex * (360 / rouletteNumbersOuter.length);
+      const ballRadius = isOuter ? 165 : 135;
+      
+      const spinSound = document.getElementById('spinSound');
+      if (spinSound) spinSound.play();
+      
+      wheel.style.transition = `transform var(--transition-duration-wheel) cubic-bezier(0.2, 0.49, 0.1, 1)`;
+      wheel.style.transform = `rotate(${spinAngle}deg)`;
+      
+      ball.style.transition = `transform var(--transition-duration-ball) cubic-bezier(0.0, 2.0, 0.1, 1)`;
+      ball.style.transform = `translate(-50%, -50%) rotate(${spinAngle + ballAngle}deg) translate(${ballRadius}px)`;
+      
+      // بعد انتهاء حركة التدوير، عرض الرقم الفائز بعد 20 ثانية
+      setTimeout(() => {
+        const winnerContainer = document.getElementById('winner-container');
+        winnerContainer.textContent = `🎉 الرقم الفائز هو: ${winningNumber} (${isOuter ? "الخارجي" : "الداخلي"}) 🎉`;
+        highlightWinningNumber(winningNumber, isOuter);
+        
+        const winSound = document.getElementById('winSound');
+        if (winSound) winSound.play();
+        
+        // عرض نافذة الفوز في رأس الموقع
+       const winPopup = document.getElementById('winPopup');
+winPopup.textContent = `🎉 فزت بالرقم ${winningNumber} 🎉`;
+winPopup.style.display = 'block';
+
+setTimeout(() => {
+  winPopup.style.display = 'none';
+}, 6000);
+
+        
+        // إيقاف صوت دوران العجلة بعد التوقف
+        if (spinSound) {
+          spinSound.pause();
+          spinSound.currentTime = 0;
+        }
+        
+        // تشغيل تأثير البرق فوق عجلة الروليت
+        const lightningWheel = document.getElementById('lightningOverWheel');
+        lightningWheel.classList.add('active');
+        setTimeout(() => {
+          lightningWheel.classList.remove('active');
+        }, 1000);
+      }, 20000);
+      
+      setTimeout(() => startHighlightCycle(), 23000);
+      
+      setTimeout(() => {
+        document.querySelectorAll('.outer-grid .cell, .inner-grid .cell').forEach(cell => {
+          cell.classList.remove('reserved', 'winning');
+        });
+        document.querySelectorAll('.number-text').forEach(nt => nt.classList.remove('winning'));
+        wheel.style.transition = "none";
+        wheel.style.transform = "rotate(0deg)";
+        ball.style.transition = "none";
+        ball.style.transform = "translate(-50%, -50%)";
+        document.getElementById('winner-container').textContent = "";
+      }, 33000);
+    }
+    
+    function highlightWinningNumber(num, isOuter) {
+      const circleSelector = isOuter ? '.numbers-outer .number-text' : '.numbers-inner .number-text';
+      const spans = document.querySelectorAll(circleSelector);
+      spans.forEach(el => {
+        if (parseInt(el.textContent, 10) === num) {
+          el.classList.add('winning');
+        } else {
+          el.classList.remove('winning');
+        }
+      });
+      const allCells = document.querySelectorAll('.outer-grid .cell, .inner-grid .cell');
+      allCells.forEach(cell => {
+        if (parseInt(cell.textContent, 10) === num) {
+          cell.classList.add('winning');
+        } else {
+          cell.classList.remove('winning');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
