@@ -20,7 +20,6 @@
       --transition-duration-ball: 20s;
       --highlight-interval: 800ms;
     }
-
     /* رأس الموقع باستخدام الصورة */
     header.site-header {
       width: 100%;
@@ -28,14 +27,11 @@
       background: url("https://i.imgur.com/mDOZCYN.jpeg") no-repeat center center;
       background-size: cover;
     }
-    
-    /* إعدادات خاصة بالجوال لرأس الموقع */
     @media (max-width: 768px) {
       header.site-header {
         height: var(--header-height-mobile);
       }
     }
-    
     /* تنسيقات الصفحة العامة */
     body {
       margin: 0;
@@ -45,8 +41,6 @@
       font-family: Arial, sans-serif;
       box-sizing: border-box;
     }
-    
-    /* تنسيق المحتوى الرئيسي */
     main {
       display: flex;
       flex-direction: column;
@@ -56,14 +50,12 @@
       padding: 20px;
       box-sizing: border-box;
     }
-    
     /* ==== تنسيقات لعبة الروليت ==== */
     .roulette-container {
       position: relative;
       width: var(--wheel-size);
       height: var(--wheel-size);
     }
-    
     /* تأثير البرق فوق عجلة الروليت */
     #lightningOverWheel {
       position: absolute;
@@ -85,11 +77,10 @@
       60% { opacity: 0.8; transform: scale(1); }
       100% { opacity: 0; transform: scale(1); }
     }
-    
     /* نافذة الفوز تظهر على رأس الموقع */
     .win-popup {
       position: fixed;
-      top: 40px; /* تظهر بالقرب من أعلى الصفحة */
+      top: 40px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0,0,0,0.8);
@@ -101,8 +92,6 @@
       z-index: 1000;
       text-align: center;
     }
-    
-    /* تحسين العرض على شاشات الجوال */
     @media (max-width: 768px) {
       .win-popup {
         top: 10px;
@@ -110,32 +99,21 @@
         padding: 10px 20px;
       }
     }
-    
- @keyframes spinLogo {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-.wheel-logo {
-  position: absolute;
-  top: 51%;
-  left: 51%;
-  width: 225px;         /* قم بتعديل الحجم حسب الحاجة */
-  height: 225px;
-  border-radius: 50%;
-  opacity: 0.8;        /* لضبط الشفافية */
-  z-index: 5;
-  /* تطبيق الأنيميشن: المدة 20 ثانية، خطية، وتتكرر إلى ما لا نهاية */
-  animation: spinLogo 20s linear infinite;
-}
-
- 
-    
-    
+    @keyframes spinLogo {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    .wheel-logo {
+      position: absolute;
+      top: 51%;
+      left: 51%;
+      width: 225px;
+      height: 225px;
+      border-radius: 50%;
+      opacity: 0.8;
+      z-index: 5;
+      animation: spinLogo 20s linear infinite;
+    }
     .wheel {
       width: 97%;
       height: 97%;
@@ -147,7 +125,6 @@
       transition: transform 4s ease-out;
       position: relative;
     }
-    
     .inner-border {
       position: absolute;
       width: 83%;
@@ -159,7 +136,6 @@
       transform: translate(-50%, -50%);
       z-index: 2;
     }
-    
     .numbers {
       position: absolute;
       width: 100%;
@@ -170,21 +146,17 @@
       align-items: center;
       z-index: 3;
     }
-    
     .number {
       position: absolute;
       transform-origin: center;
       transition: transform 0.3s ease;
     }
-    
-    /* تنسيق النص داخل الأرقام */
     .number-text {
       display: inline-block;
       transition: transform 0.3s ease, color 0.3s ease;
       transform-origin: center center;
       font-size: 16px;
     }
-    
     .ball {
       width: 14px;
       height: 14px;
@@ -198,8 +170,6 @@
       box-shadow: 0 0 10px #fff;
       z-index: 4;
     }
-    
-    /* زر التشغيل */
     .spin-container {
       height: 60px;
       margin-top: 20px;
@@ -207,7 +177,6 @@
       justify-content: center;
       align-items: center;
     }
-    
     #spin {
       padding: 10px 20px;
       font-size: 16px;
@@ -219,27 +188,18 @@
       box-shadow: 0 0 10px var(--gold-color);
       display: none;
     }
-    #spin:hover {
-      background: var(--dark-gold);
-    }
-    
-    /* نصوص العد والتخصيص */
+    #spin:hover { background: var(--dark-gold); }
     #customText, #countdown, #winner-container {
       text-align: center;
       margin: 10px 0;
     }
-    #customText {
-      font-size: 16px;
-      color: var(--gold-color);
-    }
+    #customText { font-size: 16px; color: var(--gold-color); }
     #countdown, #winner-container {
       font-size: 18px;
       font-weight: bold;
       color: var(--gold-color);
       min-height: 30px;
     }
-    
-    /* حاوية الأرقام المختارة */
     .container {
       margin: 0 auto;
       padding: 10px;
@@ -247,24 +207,10 @@
       width: 95%;
       box-sizing: border-box;
     }
-    
-    h1 {
-      margin: 10px 0;
-      color: var(--gold-color);
-      text-shadow: 0 0 10px var(--gold-color);
-      font-size: 20px;
-    }
-    
-    p {
-      font-size: 14px;
-      color: #bbb;
-      margin: 5px 0;
-    }
-    
-    /* تنسيق الشبكات للأرقام على الشاشات الكبيرة */
+    h1 { margin: 10px 0; color: var(--gold-color); text-shadow: 0 0 10px var(--gold-color); font-size: 20px; }
+    p { font-size: 14px; color: #bbb; margin: 5px 0; }
     @media (min-width: 769px) {
-      .outer-grid,
-      .inner-grid {
+      .outer-grid, .inner-grid {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -273,27 +219,21 @@
         padding: 0;
         max-width: 90%;
       }
-      .outer-grid .cell,
-      .inner-grid .cell {
+      .outer-grid .cell, .inner-grid .cell {
         padding: 15px;
         font-size: 18px;
         min-width: 60px;
       }
     }
-    
-    /* تنسيق الشبكات على الشاشات الصغيرة باستخدام Grid */
     @media (max-width: 768px) {
-      .outer-grid,
-      .inner-grid {
+      .outer-grid, .inner-grid {
         display: grid;
         grid-template-columns: repeat(4, auto);
         gap: 8px;
         justify-content: center;
         justify-items: center;
       }
-      .inner-grid {
-        margin-top: 20px;
-      }
+      .inner-grid { margin-top: 20px; }
       .cell {
         padding: 10px;
         font-size: 16px;
@@ -309,18 +249,9 @@
         min-width: 48px;
         position: relative;
       }
-      .cell.red {
-        color: red;
-        box-shadow: 0 0 6px rgba(255,0,0,0.6);
-      }
-      .cell.green {
-        color: lime;
-        box-shadow: 0 0 8px rgba(0,255,0,0.8);
-      }
-      .cell:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 12px rgba(255,255,0,0.8);
-      }
+      .cell.red { color: red; box-shadow: 0 0 6px rgba(255,0,0,0.6); }
+      .cell.green { color: lime; box-shadow: 0 0 8px rgba(0,255,0,0.8); }
+      .cell:hover { transform: scale(1.05); box-shadow: 0 0 12px rgba(255,255,0,0.8); }
       .cell.reserved {
         cursor: not-allowed;
         background: #333;
@@ -348,59 +279,51 @@
         z-index: 2;
       }
     }
-    
-    /* تنسيق الأزرار في الشبكات على الشاشات الكبيرة */
-    .outer-grid .cell,
-    .inner-grid .cell {
-      padding: 10px;
-      font-size: 16px;
-      font-weight: 700;
-      text-align: center;
-      cursor: pointer;
-      background: #000;
-      border: 2px solid var(--gold-color);
-      border-radius: 8px;
-      color: #fff;
-      box-shadow: 0 0 10px rgba(255,255,255,0.6);
-      transition: all 0.3s ease-in-out;
-      min-width: 48px;
-      position: relative;
-      margin: 0;
+    @media (min-width: 769px) {
+      .outer-grid .cell, .inner-grid .cell {
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+        background: #000;
+        border: 2px solid var(--gold-color);
+        border-radius: 8px;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(255,255,255,0.6);
+        transition: all 0.3s ease-in-out;
+        min-width: 48px;
+        position: relative;
+        margin: 0;
+      }
+      .outer-grid .cell.red, .inner-grid .cell.red {
+        color: red;
+        box-shadow: 0 0 6px rgba(255,0,0,0.6);
+      }
+      .outer-grid .cell.green, .inner-grid .cell.green {
+        color: lime;
+        box-shadow: 0 0 8px rgba(0,255,0,0.8);
+      }
+      .outer-grid .cell:hover, .inner-grid .cell:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px rgba(255,255,0,0.8);
+      }
+      .outer-grid .cell.reserved, .inner-grid .cell.reserved {
+        cursor: not-allowed;
+        background: #333;
+        color: gray !important;
+        border-color: #777 !important;
+        box-shadow: none;
+      }
+      .outer-grid .cell.reserved::after, .inner-grid .cell.reserved::after {
+        content: "❌";
+        position: absolute;
+        font-size: 1.2rem;
+        top: 0;
+        right: 0;
+        transform: translate(20%, -20%);
+      }
     }
-    .outer-grid .cell.red,
-    .inner-grid .cell.red {
-      color: red;
-      box-shadow: 0 0 6px rgba(255,0,0,0.6);
-    }
-    .outer-grid .cell.green,
-    .inner-grid .cell.green {
-      color: lime;
-      box-shadow: 0 0 8px rgba(0,255,0,0.8);
-    }
-    .outer-grid .cell:hover,
-    .inner-grid .cell:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255,255,0,0.8);
-    }
-    .outer-grid .cell.reserved,
-    .inner-grid .cell.reserved {
-      cursor: not-allowed;
-      background: #333;
-      color: gray !important;
-      border-color: #777 !important;
-      box-shadow: none;
-    }
-    .outer-grid .cell.reserved::after,
-    .inner-grid .cell.reserved::after {
-      content: "❌";
-      position: absolute;
-      font-size: 1.2rem;
-      top: 0;
-      right: 0;
-      transform: translate(20%, -20%);
-    }
-    
-    /* تنسيق التذييل بتأثير 3D فاخر */
     footer {
       background: linear-gradient(135deg, #111, #333);
       color: var(--gold-color);
@@ -413,8 +336,6 @@
       text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
       margin-top: 40px;
     }
-    
-    /* تنسيق زر إعادة التوجيه للتسجيل للزائر */
     .registration-redirect {
       text-align: center;
       margin: 20px 0;
@@ -437,45 +358,30 @@
   </style>
 </head>
 <body>
-  <!-- بداية رأس الموقع -->
   <header class="site-header">
     <!-- محتوى الرأس إن رغبت -->
   </header>
-  
-  <!-- نافذة الفوز تظهر على رأس الموقع -->
   <div id="winPopup" class="win-popup"></div>
-  
-  <!-- المحتوى الرئيسي للعبة الروليت -->
   <main>
-    <!-- حاوية الروليت -->
     <div class="roulette-container">
-     <img src="https://i.imgur.com/cOjG0JM.jpeg" alt="Logo" class="wheel-logo">
+      <img src="https://i.imgur.com/cOjG0JM.jpeg" alt="Logo" class="wheel-logo">
       <div class="wheel" id="wheel">
         <div class="numbers numbers-outer"></div>
         <div class="numbers numbers-inner"></div>
         <div class="inner-border"></div>
       </div>
       <div class="ball" id="ball"></div>
-      <!-- تأثير البرق فوق عجلة الروليت -->
       <div id="lightningOverWheel"></div>
     </div>
-    
-    <!-- زر تشغيل العجلة (يظهر فقط لوضع الأدمن) -->
     <div class="spin-container">
       <button id="spin">تشغيل العجلة</button>
     </div>
-    
-    <!-- زر إعادة التوجيه إلى صفحة التسجيل للزائر -->
     <div class="registration-redirect" id="registrationRedirect" style="display: none;">
       <button onclick="window.location.href='registration.html'">التسجيل للمشاركة</button>
     </div>
-    
-    <!-- العد التنازلي والنصوص المخصصة -->
     <p id="countdown"></p>
     <p id="customText">هنا يمكنك كتابة النص الذي تريده</p>
     <p id="winner-container"></p>
-    
-    <!-- الشبكتين الخارجية والداخلية لاختيار الأرقام -->
     <div class="container">
       <h1>اختر رقمك</h1>
       <div class="outer-grid" id="outerGrid"></div>
@@ -483,43 +389,35 @@
       <p>الأرقام المحجوزة تتحول إلى اللون الرمادي مع علامة ❌</p>
     </div>
   </main>
-  
-  <!-- التذييل بتأثير 3D فاخر -->
   <footer>
     جميع الحقوق محفوظة Sharol Luxe Voyages 2025
   </footer>
-  
-  <!-- تضمين ملفات الصوت الخارجية -->
-  <!-- ملف صوت دوران العجلة -->
+  <!-- ملفات الصوت -->
   <audio id="spinSound">
     <source src="https://od.lk/s/MjhfNDAyODM2MjJf/roulette_casino_evianaif-14446_1.mp3" type="audio/mpeg">
     متصفحك لا يدعم تشغيل الصوت.
   </audio>
-  <!-- ملف صوت الفوز -->
   <audio id="winSound">
     <source src="https://od.lk/s/MjhfNDAyODM1Mzhf/publico2-4824-169502.mp3" type="audio/mpeg">
     متصفحك لا يدعم تشغيل الصوت.
   </audio>
   
+  <!-- تضمين إعدادات Firebase من ملف خارجي -->
+  <script type="module" src="firebase-config.js"></script>
+  
+  <!-- كود الروليت مع تعديل حجز الرقم باستخدام Firebase Firestore -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-  
-  const firebaseConfig = {
-    apiKey: "AIzaSyAUYJ5jJypWSHA1sZUlQWLRYz1k51AIQIU",
-    authDomain: "sharol-707f4.firebaseapp.com",
-    projectId: "sharol-707f4",
-    storageBucket: "sharol-707f4.firebasestorage.app",
-    messagingSenderId: "671741319957",
-    appId: "1:671741319957:web:e91ea4813e3d5dbab9e71c",
-    measurementId: "G-TDF02W6SL6"
-  };
-  
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  
-  console.log("Firebase تم تهيئته:", app);
-
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+    import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    // استخدم إعدادات Firebase المُهيأة في firebase-config.js
+    import { app } from "./firebase-config.js";
+    
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    
+    console.log("Firebase تم تهيئته:", app);
+    
     /**************************************************
      * (1) إعدادات الأدمن والتهيئة
      **************************************************/
@@ -536,7 +434,6 @@
     /**************************************************
      * (2) إعداد العد التنازلي
      **************************************************/
-    // مثال: 1 مايو 2025 الساعة 1:00
     const targetDate = new Date(2025, 2, 1, 1, 0, 0).getTime();
     const countdownEl = document.getElementById('countdown');
     
@@ -626,6 +523,11 @@
       innerGrid.appendChild(createCell(num, i, false));
     });
     
+    // افتراضياً، يتم حفظ معرّف التسجيل في localStorage من صفحة التسجيل
+    let registrationId = localStorage.getItem("registrationId");
+    let hasReserved = false;
+    
+    // تعديل دالة إنشاء الخلايا لتسجيل حجز الرقم باستخدام Firebase
     function createCell(number, index, isOuter) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
@@ -636,13 +538,35 @@
         cell.classList.add('red');
       }
       cell.addEventListener('click', () => {
-        if (cell.classList.contains('reserved')) {
-          alert('هذا الرقم محجوز بالفعل!');
+        if (!registrationId) {
+          alert("الرجاء التسجيل أولاً.");
           return;
         }
-        cell.classList.add('reserved');
+        if (hasReserved) {
+          alert("لقد قمت بحجز رقم بالفعل.");
+          return;
+        }
+        handleNumberReservation(cell, number);
       });
       return cell;
+    }
+    
+    // دالة لمعالجة حجز الرقم باستخدام Firebase Firestore
+    function handleNumberReservation(cell, chosenNumber) {
+      addDoc(collection(db, "reservations"), {
+        registrationId: registrationId,
+        reservedNumber: chosenNumber,
+        reservedAt: new Date().toISOString()
+      })
+      .then(docRef => {
+        hasReserved = true;
+        cell.classList.add('reserved');
+        alert("تم حجز الرقم " + chosenNumber);
+      })
+      .catch(error => {
+        alert("حدث خطأ أثناء حجز الرقم: " + error.message);
+        console.error("Reservation error:", error);
+      });
     }
     
     /**************************************************
@@ -704,7 +628,6 @@
       ball.style.transition = `transform var(--transition-duration-ball) cubic-bezier(0.0, 2.0, 0.1, 1)`;
       ball.style.transform = `translate(-50%, -50%) rotate(${spinAngle + ballAngle}deg) translate(${ballRadius}px)`;
       
-      // بعد انتهاء حركة التدوير، عرض الرقم الفائز بعد 20 ثانية
       setTimeout(() => {
         const winnerContainer = document.getElementById('winner-container');
         winnerContainer.textContent = `🎉 الرقم الفائز هو: ${winningNumber} (${isOuter ? "الخارجي" : "الداخلي"}) 🎉`;
@@ -713,23 +636,18 @@
         const winSound = document.getElementById('winSound');
         if (winSound) winSound.play();
         
-        // عرض نافذة الفوز في رأس الموقع
-       const winPopup = document.getElementById('winPopup');
-winPopup.textContent = `🎉 فزت بالرقم ${winningNumber} 🎉`;
-winPopup.style.display = 'block';
-
-setTimeout(() => {
-  winPopup.style.display = 'none';
-}, 6000);
-
+        const winPopup = document.getElementById('winPopup');
+        winPopup.textContent = `🎉 فزت بالرقم ${winningNumber} 🎉`;
+        winPopup.style.display = 'block';
+        setTimeout(() => {
+          winPopup.style.display = 'none';
+        }, 6000);
         
-        // إيقاف صوت دوران العجلة بعد التوقف
         if (spinSound) {
           spinSound.pause();
           spinSound.currentTime = 0;
         }
         
-        // تشغيل تأثير البرق فوق عجلة الروليت
         const lightningWheel = document.getElementById('lightningOverWheel');
         lightningWheel.classList.add('active');
         setTimeout(() => {
