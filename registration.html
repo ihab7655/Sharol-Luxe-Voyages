@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -19,14 +18,12 @@
       justify-content: flex-start;
       min-height: 100vh;
     }
-
     h1 {
       color: gold;
       text-shadow: 0 0 8px gold;
       margin-top: 20px;
       font-size: 24px;
     }
-
     form {
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid gold;
@@ -37,26 +34,22 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
       position: relative;
     }
-
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
       color: gold;
     }
-
     .flex-row {
       display: flex;
       gap: 10px;
       margin-bottom: 15px;
     }
-
     .flex-row > div {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
-
     input, select {
       width: 100%;
       padding: 8px;
@@ -69,11 +62,9 @@
       box-sizing: border-box;
       margin-bottom: 15px;
     }
-
     input::placeholder {
       color: #ccc;
     }
-
     button {
       display: inline-block;
       padding: 10px 20px;
@@ -89,192 +80,85 @@
       margin-top: 5px;
       margin-right: 10px;
     }
-
     button:hover {
       background: darkgoldenrod;
     }
-
     .payment-section {
       margin-bottom: 15px;
     }
-
-    /* رسالة الخطأ أو النجاح */
     #message {
       text-align: center;
       font-size: 14px;
       margin-bottom: 10px;
-      min-height: 20px; /* لإبقاء المساحة ثابتة عند إخفاء الرسائل */
+      min-height: 20px;
     }
-
-    /* تنسيق الحقل الخاطئ */
-    .error {
-      border: 2px solid red !important;
-    }
-
-    .success {
-      color: lime;
-    }
-
-    .fail {
-      color: #f33;
-    }
+    .error { border: 2px solid red !important; }
+    .success { color: lime; }
+    .fail { color: #f33; }
   </style>
 </head>
 <body>
-
   <h1>نموذج التسجيل في القرعة</h1>
-  <!-- اجعل action يشير إلى رابط خادمك، واستخدم method POST -->
-  <form id="registrationForm" action="https://example.com/api/register" method="POST" onsubmit="return validateForm()">
+  <form id="registrationForm" onsubmit="return submitForm(event)">
     <div id="message"></div>
-
-    <!-- الاسم الكامل -->
     <label for="fullName">الاسم الكامل</label>
-    <input
-      type="text"
-      id="fullName"
-      name="fullName"
-      placeholder="أدخل اسمك الكامل"
-      required
-    />
-
-    <!-- كود الدولة ورقم الهاتف في سطر واحد -->
+    <input type="text" id="fullName" placeholder="أدخل اسمك الكامل" required />
     <div class="flex-row">
       <div>
         <label for="phoneCode">كود الدولة</label>
-        <select id="phoneCode" name="phoneCode" required>
+        <select id="phoneCode" required>
           <option value="">اختر كود الدولة</option>
-          <option value="+966">+966 (المملكة العربية السعودية)</option>
+          <option value="+966">+966 (السعودية)</option>
           <option value="+971">+971 (الإمارات)</option>
-          <option value="+965">+965 (الكويت)</option>
-          <option value="+974">+974 (قطر)</option>
-          <option value="+973">+973 (البحرين)</option>
-          <option value="+968">+968 (عُمان)</option>
-          <option value="+964">+964 (العراق)</option>
-          <option value="+962">+962 (الأردن)</option>
-          <option value="+961">+961 (لبنان)</option>
           <option value="+963">+963 (سوريا)</option>
-          <option value="+970">+970 (فلسطين)</option>
-          <option value="+20">+20 (مصر)</option>
-          <option value="+249">+249 (السودان)</option>
-          <option value="+218">+218 (ليبيا)</option>
-          <option value="+216">+216 (تونس)</option>
-          <option value="+213">+213 (الجزائر)</option>
           <option value="+212">+212 (المغرب)</option>
-          <option value="+967">+967 (اليمن)</option>
         </select>
       </div>
       <div>
         <label for="phoneNumber">رقم الهاتف</label>
-        <input
-          type="text"
-          id="phoneNumber"
-          name="phoneNumber"
-          placeholder="مثال: 5xxxxxxx"
-          required
-        />
+        <input type="text" id="phoneNumber" placeholder="مثال: 5xxxxxxx" required />
       </div>
     </div>
-
-    <!-- الدولة -->
     <label for="country">الدولة</label>
-    <select id="country" name="country" required>
+    <select id="country" required>
       <option value="">اختر الدولة</option>
-      <option value="المملكة العربية السعودية">المملكة العربية السعودية</option>
-      <option value="الإمارات العربية المتحدة">الإمارات العربية المتحدة</option>
-      <option value="الكويت">الكويت</option>
-      <option value="قطر">قطر</option>
-      <option value="البحرين">البحرين</option>
-      <option value="عمان">عُمان</option>
-      <option value="العراق">العراق</option>
-      <option value="الأردن">الأردن</option>
-      <option value="لبنان">لبنان</option>
       <option value="سوريا">سوريا</option>
-      <option value="فلسطين">فلسطين</option>
-      <option value="مصر">مصر</option>
-      <option value="السودان">السودان</option>
-      <option value="ليبيا">ليبيا</option>
-      <option value="تونس">تونس</option>
-      <option value="الجزائر">الجزائر</option>
       <option value="المغرب">المغرب</option>
-      <option value="اليمن">اليمن</option>
+      <option value="السعودية">السعودية</option>
+      <option value="الإمارات">الإمارات</option>
     </select>
-
-    <!-- الوضع الوظيفي -->
     <label for="jobStatus">الوضع الوظيفي</label>
-    <select id="jobStatus" name="jobStatus" required>
+    <select id="jobStatus" required>
       <option value="">اختر</option>
       <option value="موظف">موظف</option>
       <option value="عاطل">عاطل</option>
       <option value="طالب">طالب</option>
     </select>
-
-    <!-- العمر (من 18 إلى 55) -->
     <label for="age">العمر</label>
-    <select id="age" name="age" required>
-      <option value="">اختر العمر</option>
-      <!-- نضيف الخيارات 18..55 -->
-    </select>
-
-    <!-- قسم الدفع (يمكن إخفاؤه عند الحاجة) -->
-    <div class="payment-section" id="paymentSection">
-      <label for="paymentMethod">طريقة الدفع</label>
-      <select id="paymentMethod" name="paymentMethod">
-        <option value="credit-card">بطاقة ائتمانية</option>
-        <option value="paypal">PayPal</option>
-        <option value="bank">تحويل بنكي</option>
-      </select>
-    </div>
-
+    <select id="age" required></select>
     <div class="flex-row" style="justify-content: flex-start;">
-      <!-- زر إرسال النموذج (حفظ البيانات في قاعدة البيانات عبر الخادم) -->
       <button type="submit">تسجيل</button>
-
-      <!-- زر المتابعة كزائر لا يرسل النموذج -->
       <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
     </div>
   </form>
 
   <script type="module">
-  import { db } from './firebase-config.js';
-  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  const form = document.getElementById('registrationForm');
-  const message = document.getElementById('message');
-
-  form.addEventListener('submit', async function (e) {
-    e.preventDefault(); // منع الإرسال العادي
-
-    // جمع البيانات من النموذج
-    const data = {
-      fullName: document.getElementById('fullName').value,
-      phoneCode: document.getElementById('phoneCode').value,
-      phoneNumber: document.getElementById('phoneNumber').value,
-      country: document.getElementById('country').value,
-      jobStatus: document.getElementById('jobStatus').value,
-      age: document.getElementById('age').value,
-      paymentMethod: document.getElementById('paymentMethod')?.value || 'N/A',
-      timestamp: new Date()
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUYJ5jJypWSHA1sZUlQWLRYz1k51AIQIU",
+      authDomain: "sharol-707f4.firebaseapp.com",
+      projectId: "sharol-707f4",
+      storageBucket: "sharol-707f4.appspot.com",
+      messagingSenderId: "671741319957",
+      appId: "1:671741319957:web:e91ea4813e3d5dbab9e71c",
+      measurementId: "G-TDF02W6SL6"
     };
 
-    try {
-      await addDoc(collection(db, "lottery-users"), data); // ← هنا اسم المجموعة
-      message.textContent = "✅ تم التسجيل بنجاح!";
-      message.className = "success";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-      // إعادة توجيه لصفحة الروليت مثلاً:
-      setTimeout(() => {
-        window.location.href = "roulette.html";
-      }, 1500);
-
-    } catch (error) {
-      message.textContent = "❌ حدث خطأ أثناء التسجيل.";
-      message.className = "fail";
-      console.error(error);
-    }
-  });
-
-
-    // إضافة خيارات العمر (18..55) ديناميكيًا
     const ageSelect = document.getElementById('age');
     for (let i = 18; i <= 55; i++) {
       const opt = document.createElement('option');
@@ -283,62 +167,43 @@
       ageSelect.appendChild(opt);
     }
 
-    // تحكّم في تفعيل/تعطيل الدفع
-    const paymentEnabled = false; // عدّلها إلى false إن كانت المشاركة مجانية
-    const paymentSection = document.getElementById('paymentSection');
-    if (!paymentEnabled) {
-      paymentSection.style.display = 'none';
-    }
-
-    // دالة للتحقق قبل الإرسال
-    function validateForm() {
+    window.submitForm = async function(event) {
+      event.preventDefault();
       const message = document.getElementById('message');
       message.textContent = '';
       message.className = '';
 
-      // اجلب جميع الحقول المطلوبة
-      const requiredFields = [
-        'fullName',
-        'phoneCode',
-        'phoneNumber',
-        'country',
-        'jobStatus',
-        'age',
-      ];
-      if (paymentEnabled) {
-        requiredFields.push('paymentMethod');
+      const data = {
+        fullName: document.getElementById('fullName').value.trim(),
+        phoneCode: document.getElementById('phoneCode').value,
+        phoneNumber: document.getElementById('phoneNumber').value.trim(),
+        country: document.getElementById('country').value,
+        jobStatus: document.getElementById('jobStatus').value,
+        age: document.getElementById('age').value,
+        createdAt: new Date().toISOString()
+      };
+
+      if (Object.values(data).some(v => !v)) {
+        message.textContent = 'الرجاء تعبئة جميع الحقول';
+        message.className = 'fail';
+        return;
       }
 
-      let hasError = false;
-      // أزل تنسيق الخطأ أولًا
-      requiredFields.forEach((id) => {
-        const field = document.getElementById(id);
-        field.classList.remove('error');
-      });
-
-      // تحقق من القيم
-      requiredFields.forEach((id) => {
-        const field = document.getElementById(id);
-        if (!field.value || field.value.trim() === '') {
-          field.classList.add('error');
-          hasError = true;
-        }
-      });
-
-      if (hasError) {
-        message.textContent = 'الرجاء تعبئة الحقول المطلوبة.';
-        message.classList.add('fail');
-        return false; // منع الإرسال
+      try {
+        await addDoc(collection(db, "lottery-users"), data);
+        message.textContent = 'تم التسجيل بنجاح';
+        message.className = 'success';
+        setTimeout(() => {
+          window.location.href = 'roulette.html';
+        }, 1500);
+      } catch (err) {
+        console.error(err);
+        message.textContent = 'حدث خطأ أثناء التسجيل';
+        message.className = 'fail';
       }
-
-      // إذا لا يوجد أخطاء، دع النموذج يُرسل الطلب
-      // ويمكنك وضع أي تحقق إضافي هنا
-      return true;
     }
 
-    // زر المتابعة كزائر
-    function continueAsGuest() {
-      // يمكنك تمرير بارامتر عبر الرابط أو التعامل مع LocalStorage
+    window.continueAsGuest = function() {
       window.location.href = 'roulette.html?guest=true';
     }
   </script>
