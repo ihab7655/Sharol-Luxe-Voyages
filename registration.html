@@ -18,14 +18,12 @@
       justify-content: flex-start;
       min-height: 100vh;
     }
-
     h1 {
       color: gold;
       text-shadow: 0 0 8px gold;
       margin-top: 20px;
       font-size: 24px;
     }
-
     form {
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid gold;
@@ -36,26 +34,22 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
       position: relative;
     }
-
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
       color: gold;
     }
-
     .flex-row {
       display: flex;
       gap: 10px;
       margin-bottom: 15px;
     }
-
     .flex-row > div {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
-
     input, select {
       width: 100%;
       padding: 8px;
@@ -68,11 +62,9 @@
       box-sizing: border-box;
       margin-bottom: 15px;
     }
-
     input::placeholder {
       color: #ccc;
     }
-
     button {
       display: inline-block;
       padding: 10px 20px;
@@ -88,15 +80,12 @@
       margin-top: 5px;
       margin-right: 10px;
     }
-
     button:hover {
       background: darkgoldenrod;
     }
-
     .payment-section {
       margin-bottom: 15px;
     }
-
     /* رسالة الخطأ أو النجاح */
     #message {
       text-align: center;
@@ -104,26 +93,22 @@
       margin-bottom: 10px;
       min-height: 20px; /* لإبقاء المساحة ثابتة عند إخفاء الرسائل */
     }
-
     /* تنسيق الحقل الخاطئ */
     .error {
       border: 2px solid red !important;
     }
-
     .success {
       color: lime;
     }
-
     .fail {
       color: #f33;
     }
   </style>
 </head>
 <body>
-
   <h1>نموذج التسجيل في القرعة</h1>
-  <!-- اجعل action يشير إلى رابط خادمك، واستخدم method POST -->
-  <form id="registrationForm" action="https://example.com/api/register" method="POST" onsubmit="return validateForm()">
+  <!-- تم إزالة attribute action ليتولى JavaScript عملية الإرسال -->
+  <form id="registrationForm" onsubmit="return false;">
     <div id="message"></div>
 
     <!-- الاسم الكامل -->
@@ -211,7 +196,7 @@
     <label for="age">العمر</label>
     <select id="age" name="age" required>
       <option value="">اختر العمر</option>
-      <!-- نضيف الخيارات 18..55 -->
+      <!-- يتم إضافة الخيارات 18 إلى 55 ديناميكيًا -->
     </select>
 
     <!-- قسم الدفع (يمكن إخفاؤه عند الحاجة) -->
@@ -225,34 +210,15 @@
     </div>
 
     <div class="flex-row" style="justify-content: flex-start;">
-      <!-- زر إرسال النموذج (حفظ البيانات في قاعدة البيانات عبر الخادم) -->
+      <!-- زر إرسال النموذج -->
       <button type="submit">تسجيل</button>
-
       <!-- زر المتابعة كزائر لا يرسل النموذج -->
       <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
     </div>
   </form>
 
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAUYJ5jJypWSHA1sZUlQWLRYz1k51AIQIU",
-    authDomain: "sharol-707f4.firebaseapp.com",
-    projectId: "sharol-707f4",
-    storageBucket: "sharol-707f4.firebasestorage.app",
-    messagingSenderId: "671741319957",
-    appId: "1:671741319957:web:e91ea4813e3d5dbab9e71c",
-    measurementId: "G-TDF02W6SL6"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  console.log("Firebase تم تهيئته:", app);
-
-
-    // إضافة خيارات العمر (18..55) ديناميكيًا
+  <script>
+    // إضافة خيارات العمر (18 إلى 55) ديناميكيًا
     const ageSelect = document.getElementById('age');
     for (let i = 18; i <= 55; i++) {
       const opt = document.createElement('option');
@@ -261,42 +227,40 @@
       ageSelect.appendChild(opt);
     }
 
-    // تحكّم في تفعيل/تعطيل الدفع
-    const paymentEnabled = false; // عدّلها إلى false إن كانت المشاركة مجانية
+    // تحكم في تفعيل/تعطيل الدفع
+    const paymentEnabled = false; // تعديل إلى false إذا كانت المشاركة مجانية
     const paymentSection = document.getElementById('paymentSection');
     if (!paymentEnabled) {
       paymentSection.style.display = 'none';
     }
 
-    // دالة للتحقق قبل الإرسال
+    // دالة المتابعة كزائر
+    function continueAsGuest() {
+      window.location.href = 'roulette.html?guest=true';
+    }
+
+    // دالة التحقق من صحة النموذج قبل الإرسال (للتأكيد فقط)
     function validateForm() {
       const message = document.getElementById('message');
       message.textContent = '';
       message.className = '';
 
-      // اجلب جميع الحقول المطلوبة
       const requiredFields = [
         'fullName',
         'phoneCode',
         'phoneNumber',
         'country',
         'jobStatus',
-        'age',
+        'age'
       ];
       if (paymentEnabled) {
         requiredFields.push('paymentMethod');
       }
 
       let hasError = false;
-      // أزل تنسيق الخطأ أولًا
       requiredFields.forEach((id) => {
         const field = document.getElementById(id);
         field.classList.remove('error');
-      });
-
-      // تحقق من القيم
-      requiredFields.forEach((id) => {
-        const field = document.getElementById(id);
         if (!field.value || field.value.trim() === '') {
           field.classList.add('error');
           hasError = true;
@@ -306,19 +270,64 @@
       if (hasError) {
         message.textContent = 'الرجاء تعبئة الحقول المطلوبة.';
         message.classList.add('fail');
-        return false; // منع الإرسال
+        return false;
       }
-
-      // إذا لا يوجد أخطاء، دع النموذج يُرسل الطلب
-      // ويمكنك وضع أي تحقق إضافي هنا
       return true;
     }
+  </script>
 
-    // زر المتابعة كزائر
-    function continueAsGuest() {
-      // يمكنك تمرير بارامتر عبر الرابط أو التعامل مع LocalStorage
-      window.location.href = 'roulette.html?guest=true';
-    }
+  <!-- تضمين إعدادات Firebase من ملف خارجي -->
+  <script type="module" src="firebase-config.js"></script>
+
+  <!-- كود التسجيل باستخدام Firebase Firestore -->
+  <script type="module">
+    import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { app } from "./firebase-config.js";
+    
+    const db = getFirestore(app);
+    const registrationForm = document.getElementById("registrationForm");
+    const messageEl = document.getElementById("message");
+
+    // التقاط حدث الإرسال للنموذج
+    registrationForm.addEventListener("submit", async (e) => {
+      e.preventDefault(); // منع الإرسال الافتراضي
+      messageEl.textContent = '';
+      
+      // تحقق من صحة النموذج قبل المتابعة
+      if (!validateForm()) return;
+      
+      // جمع بيانات النموذج
+      const fullName = document.getElementById("fullName").value;
+      const phoneCode = document.getElementById("phoneCode").value;
+      const phoneNumber = document.getElementById("phoneNumber").value;
+      const country = document.getElementById("country").value;
+      const jobStatus = document.getElementById("jobStatus").value;
+      const age = document.getElementById("age").value;
+      let paymentMethod = "";
+      if (paymentEnabled) {
+        paymentMethod = document.getElementById("paymentMethod").value;
+      }
+      
+      // إنشاء سجل التسجيل في Firestore
+      try {
+        const docRef = await addDoc(collection(db, "registrations"), {
+          fullName,
+          phoneCode,
+          phoneNumber,
+          country,
+          jobStatus,
+          age,
+          paymentMethod,
+          registeredAt: new Date().toISOString()
+        });
+        messageEl.style.color = "green";
+        messageEl.textContent = "تم التسجيل بنجاح! معرف التسجيل: " + docRef.id;
+        registrationForm.reset();
+      } catch (error) {
+        messageEl.style.color = "red";
+        messageEl.textContent = "حدث خطأ: " + error.message;
+      }
+    });
   </script>
 </body>
 </html>
