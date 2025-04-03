@@ -18,12 +18,14 @@
       justify-content: flex-start;
       min-height: 100vh;
     }
+
     h1 {
       color: gold;
       text-shadow: 0 0 8px gold;
       margin-top: 20px;
       font-size: 24px;
     }
+
     form {
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid gold;
@@ -34,22 +36,26 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
       position: relative;
     }
+
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
       color: gold;
     }
+
     .flex-row {
       display: flex;
       gap: 10px;
       margin-bottom: 15px;
     }
+
     .flex-row > div {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
+
     input, select {
       width: 100%;
       padding: 8px;
@@ -62,9 +68,11 @@
       box-sizing: border-box;
       margin-bottom: 15px;
     }
+
     input::placeholder {
       color: #ccc;
     }
+
     button {
       display: inline-block;
       padding: 10px 20px;
@@ -80,27 +88,30 @@
       margin-top: 5px;
       margin-right: 10px;
     }
+
     button:hover {
       background: darkgoldenrod;
     }
-    .payment-section {
-      margin-bottom: 15px;
-    }
+
     #message {
       text-align: center;
       font-size: 14px;
       margin-bottom: 10px;
       min-height: 20px;
     }
+
     .error {
       border: 2px solid red !important;
     }
+
     .success {
       color: lime;
     }
+
     .fail {
       color: #f33;
     }
+
     .container {
       margin: 20px auto;
       padding: 10px;
@@ -108,6 +119,7 @@
       width: 95%;
       box-sizing: border-box;
     }
+
     .outer-grid, .inner-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
@@ -115,7 +127,9 @@
       justify-items: center;
       margin-top: 10px;
     }
+
     .cell {
+      position: relative; /* لأجل علامة ❌ */
       padding: 8px;
       font-size: 14px;
       font-weight: bold;
@@ -129,23 +143,29 @@
       transition: all 0.3s ease-in-out;
       min-width: 40px;
     }
+
     .cell.red { color: red; }
     .cell.green { color: lime; }
+
     .cell.reserved {
       cursor: not-allowed;
       background: #333;
       color: gray !important;
       border-color: #777 !important;
     }
+
+    .cell.reserved::after {
+      content: '❌';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 1rem;
+      color: red;
+    }
   </style>
 </head>
 <body>
   <h1>نموذج التسجيل في القرعة</h1>
-
-  <!--
-    ملاحظة: في onsubmit أزلنا action/POST واعتمدنا على handleSubmit
-    حتى نتحكم في الإرسال ونستخدم Firebase
-  -->
   <form id="registrationForm" onsubmit="return handleSubmit(event)">
     <div id="message"></div>
 
@@ -186,8 +206,12 @@
       <option value="طالب">طالب</option>
     </select>
 
+     <!-- العمر (من 18 إلى 55) -->
     <label for="age">العمر</label>
-    <select id="age" name="age" required></select>
+    <select id="age" name="age" required>
+      <option value="">اختر العمر</option>
+      <!-- نضيف الخيارات 18..55 -->
+    </select>
 
     <div class="container">
       <h3>اختر رقمك للمشاركة في القرعة</h3>
@@ -199,13 +223,12 @@
     <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
   </form>
 
-  <!-- ربط Firebase في نهاية الصفحة -->
   <script type="module">
-    /**************************************************
-     * 1) إعداد Firebase
-     **************************************************/
+    /*******************************************************
+     * 1) إعداد Firebase & جلب الأرقام المحجوزة
+     *******************************************************/
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAUYJ5jJypWSHA1sZUlQWLRYz1k51AIQIU",
@@ -219,51 +242,45 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /**************************************************
-     * 2) تعبئة قائمة العمر 18..55
-     **************************************************/
-    const ageSelect = document.getElementById('age');
+    // تعبئة قائمة العمر 18..55
+    const ageSel = document.getElementById('age');
     for (let i = 18; i <= 55; i++) {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = i;
-      ageSelect.appendChild(opt);
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = i;
+      ageSel.appendChild(option);
     }
 
-    /**************************************************
-     * 3) دالة المتابعة كزائر
-     **************************************************/
     window.continueAsGuest = function() {
       window.location.href = 'roulette.html?guest=true';
     };
 
-    /**************************************************
-     * 4) الشبكتان الخارجية والداخلية
-     **************************************************/
     const rouletteNumbersOuter = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
     const rouletteNumbersInner = [49,45,40,52,46,59,55,61,50,53,44,63,42,60,57,43,58,41,48,62,39,47,64,51,38,56,66,65,68,54,67,69,71,70,72,74,73];
 
     const outerGrid = document.getElementById('outerGrid');
     const innerGrid = document.getElementById('innerGrid');
-    let selectedNumber = null; // الرقم الذي يختاره المستخدم
+    let selectedNumber = null; // الرقم المختار
 
-    // لجلب الأرقام المحجوزة مسبقًا من Firestore
-    let reservedSet = new Set();
+    // سنجلب كل الأرقام المحجوزة من قاعدة البيانات عند تحميل الصفحة
+    let reservedNumbersSet = new Set();
 
-    // بتحميل الصفحة، نجلب الأرقام المحجوزة وننشئ الشبكتين
+    // عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', async () => {
+      // 1) جلب الأرقام المحجوزة
       await loadReservedNumbers();
+      // 2) بناء الشبكتين
       buildGrids();
     });
 
-    // جلب الأرقام المحجوزة من مجموعة lottery-users
+    // جلب كل الأرقام المحجوزة في حقل chosenNumber
     async function loadReservedNumbers() {
       try {
         const snap = await getDocs(collection(db, 'lottery-users'));
         snap.forEach(doc => {
           const d = doc.data();
           if (d.chosenNumber != null) {
-            reservedSet.add(parseInt(d.chosenNumber));
+            reservedNumbersSet.add(parseInt(d.chosenNumber));
           }
         });
       } catch (err) {
@@ -271,64 +288,75 @@
       }
     }
 
-    // إنشاء الخليتين الخارجية والداخلية
     function buildGrids() {
+      // تفريغ سابق
       outerGrid.innerHTML = '';
       innerGrid.innerHTML = '';
+
+      // الشبكة الخارجية
       rouletteNumbersOuter.forEach((num, i) => {
         outerGrid.appendChild(createCell(num, i));
       });
+      // الشبكة الداخلية
       rouletteNumbersInner.forEach((num, i) => {
         innerGrid.appendChild(createCell(num, i));
       });
     }
 
-    // دالة لإنشاء خلية
     function createCell(number, index) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
       cell.textContent = number;
 
-      // تلوين خاص: 0 أو 49 باللون الأخضر
       if (number === 0 || number === 49) {
         cell.classList.add('green');
       } else if (index % 2 === 0) {
-        // الأرقام الحمراء
         cell.classList.add('red');
       }
 
-      // لو الرقم محجوز مسبقًا
-      if (reservedSet.has(number)) {
+      // إذا الرقم محجوز مسبقًا
+      if (reservedNumbersSet.has(number)) {
         cell.classList.add('reserved');
       } else {
-        // السماح باختيار الرقم
+        // سماح بالاختيار
         cell.addEventListener('click', () => {
           if (cell.classList.contains('reserved')) return;
+          // أزل الحجز القديم في الواجهة فقط
+          document.querySelectorAll('.cell.reserved:not(.green,.red)').forEach(c => {
+            // (تنبيه) هذا حسب رغبتك، لكن لو أنك تريد الاحتفاظ بفراغ
+            // لا تمسح reserved من الخلايا المحجوزة من قبل! لذلك سنبقيه بسيطًا:
+          });
 
-          // إلغاء تمييز أي خلية مختارة سابقًا
-          const allCells = document.querySelectorAll('.cell');
-          allCells.forEach(c => c.classList.remove('reserved'));
+          // حدد الرقم الحالي
+          // منطقك السابق يمسح reserved من جميع الخلايا، لذا سنستخدم محدد مختلف
+          const selectedBefore = document.querySelectorAll('.cell.selectedNow');
+          selectedBefore.forEach(c => {
+            c.classList.remove('selectedNow');
+            c.style.background = '#000';
+          });
 
-          // تمييز الخلية الحالية
-          cell.classList.add('reserved');
+          cell.classList.add('selectedNow');
+          cell.style.background = 'darkgoldenrod';
+          cell.style.color = '#000';
+
           selectedNumber = number;
-          // يمكنك تخزينه في localStorage إذا احتجت
-          // localStorage.setItem('reservedNumber', number);
         });
       }
       return cell;
     }
 
-    /**************************************************
-     * 5) دالة التحقق من الحقول + الحفظ في Firestore
-     **************************************************/
-    window.handleSubmit = async function(event) {
-      event.preventDefault();
+    /*******************************************************
+     * 2) handleSubmit
+     *   - يتحقق من عدم وجود اسم مسبق
+     *   - يحفظ البيانات والرقم في Firestore
+     *******************************************************/
+    window.handleSubmit = async function(e) {
+      e.preventDefault();
       const message = document.getElementById('message');
       message.textContent = '';
       message.className = '';
 
-      // تحقق من حقول الاستمارة
+      // تحقق من الحقول
       const fields = ['fullName', 'phoneCode', 'phoneNumber', 'country', 'jobStatus', 'age'];
       let valid = true;
       fields.forEach(id => {
@@ -339,39 +367,49 @@
           valid = false;
         }
       });
-      if (!selectedNumber) {
-        alert('يرجى اختيار رقم للمشاركة.');
+
+      if (selectedNumber === null) {
+        alert('يرجى اختيار رقم قبل التسجيل (حتى لو الرقم 0).');
         valid = false;
       }
       if (!valid) return false;
 
-      // جهز البيانات للحفظ
+      //  (أ) منع الاسم من الحجز مرتين
+      const fullNameVal = document.getElementById('fullName').value.trim();
+      try {
+        const q = query(collection(db, 'lottery-users'), where('fullName','==', fullNameVal));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          message.textContent = 'لا يمكنك الحجز مرتين بنفس الاسم.';
+          message.classList.add('fail');
+          return false;
+        }
+      } catch(err) {
+        console.error('خطأ في التحقق من الاسم:', err);
+      }
+
+      // تجهيز البيانات للحفظ
       const data = {
-        fullName: document.getElementById('fullName').value.trim(),
-        phoneCode: document.getElementById('phoneCode').value,
+        fullName: fullNameVal,
+        phoneCode: document.getElementById('phoneCode').value.trim(),
         phoneNumber: document.getElementById('phoneNumber').value.trim(),
-        country: document.getElementById('country').value,
-        jobStatus: document.getElementById('jobStatus').value,
-        age: document.getElementById('age').value,
+        country: document.getElementById('country').value.trim(),
+        jobStatus: document.getElementById('jobStatus').value.trim(),
+        age: document.getElementById('age').value.trim(),
         chosenNumber: selectedNumber,
         createdAt: new Date().toISOString()
       };
 
       try {
-        // أضف المستند لقاعدة البيانات
         await addDoc(collection(db, 'lottery-users'), data);
-
-        message.textContent = 'تم التسجيل بنجاح';
+        message.textContent = 'تم التسجيل بنجاح!';
         message.classList.add('success');
-
-        // إعادة توجيه بعد النجاح
         setTimeout(() => {
           window.location.href = 'roulette.html';
         }, 1500);
-
-      } catch (err) {
+      } catch(err) {
         console.error(err);
-        message.textContent = 'حدث خطأ أثناء التسجيل';
+        message.textContent = 'حدث خطأ أثناء التسجيل.';
         message.classList.add('fail');
       }
       return false;
@@ -379,4 +417,3 @@
   </script>
 </body>
 </html>
-
