@@ -18,12 +18,14 @@
       justify-content: flex-start;
       min-height: 100vh;
     }
+
     h1 {
       color: gold;
       text-shadow: 0 0 8px gold;
       margin-top: 20px;
       font-size: 24px;
     }
+
     form {
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid gold;
@@ -34,22 +36,26 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
       position: relative;
     }
+
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
       color: gold;
     }
+
     .flex-row {
       display: flex;
       gap: 10px;
       margin-bottom: 15px;
     }
+
     .flex-row > div {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
+
     input, select {
       width: 100%;
       padding: 8px;
@@ -62,9 +68,11 @@
       box-sizing: border-box;
       margin-bottom: 15px;
     }
+
     input::placeholder {
       color: #ccc;
     }
+
     button {
       display: inline-block;
       padding: 10px 20px;
@@ -80,85 +88,129 @@
       margin-top: 5px;
       margin-right: 10px;
     }
+
     button:hover {
       background: darkgoldenrod;
     }
+
     .payment-section {
       margin-bottom: 15px;
     }
+
     #message {
       text-align: center;
       font-size: 14px;
       margin-bottom: 10px;
       min-height: 20px;
     }
-    .error { border: 2px solid red !important; }
-    .success { color: lime; }
-    .fail { color: #f33; }
+
+    .error {
+      border: 2px solid red !important;
+    }
+
+    .success {
+      color: lime;
+    }
+
+    .fail {
+      color: #f33;
+    }
+
+    .container {
+      margin: 20px auto;
+      padding: 10px;
+      text-align: center;
+      width: 95%;
+      box-sizing: border-box;
+    }
+
+    .outer-grid, .inner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+      gap: 8px;
+      justify-items: center;
+      margin-top: 10px;
+    }
+
+    .cell {
+      padding: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      background: #000;
+      border: 2px solid gold;
+      border-radius: 8px;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(255,255,255,0.5);
+      transition: all 0.3s ease-in-out;
+      min-width: 40px;
+    }
+
+    .cell.red { color: red; }
+    .cell.green { color: lime; }
+    .cell.reserved {
+      cursor: not-allowed;
+      background: #333;
+      color: gray !important;
+      border-color: #777 !important;
+    }
   </style>
 </head>
 <body>
   <h1>نموذج التسجيل في القرعة</h1>
-  <form id="registrationForm" onsubmit="return submitForm(event)">
+  <form id="registrationForm" onsubmit="return validateForm()">
     <div id="message"></div>
+
     <label for="fullName">الاسم الكامل</label>
-    <input type="text" id="fullName" placeholder="أدخل اسمك الكامل" required />
+    <input type="text" id="fullName" name="fullName" placeholder="أدخل اسمك الكامل" required />
+
     <div class="flex-row">
       <div>
         <label for="phoneCode">كود الدولة</label>
-        <select id="phoneCode" required>
+        <select id="phoneCode" name="phoneCode" required>
           <option value="">اختر كود الدولة</option>
-          <option value="+966">+966 (السعودية)</option>
-          <option value="+971">+971 (الإمارات)</option>
           <option value="+963">+963 (سوريا)</option>
           <option value="+212">+212 (المغرب)</option>
+          <!-- أضف المزيد إن رغبت -->
         </select>
       </div>
       <div>
         <label for="phoneNumber">رقم الهاتف</label>
-        <input type="text" id="phoneNumber" placeholder="مثال: 5xxxxxxx" required />
+        <input type="text" id="phoneNumber" name="phoneNumber" placeholder="مثال: 5xxxxxxx" required />
       </div>
     </div>
+
     <label for="country">الدولة</label>
-    <select id="country" required>
+    <select id="country" name="country" required>
       <option value="">اختر الدولة</option>
       <option value="سوريا">سوريا</option>
       <option value="المغرب">المغرب</option>
-      <option value="السعودية">السعودية</option>
-      <option value="الإمارات">الإمارات</option>
+      <!-- أضف المزيد إن رغبت -->
     </select>
+
     <label for="jobStatus">الوضع الوظيفي</label>
-    <select id="jobStatus" required>
+    <select id="jobStatus" name="jobStatus" required>
       <option value="">اختر</option>
       <option value="موظف">موظف</option>
       <option value="عاطل">عاطل</option>
       <option value="طالب">طالب</option>
     </select>
+
     <label for="age">العمر</label>
-    <select id="age" required></select>
-    <div class="flex-row" style="justify-content: flex-start;">
-      <button type="submit">تسجيل</button>
-      <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
+    <select id="age" name="age" required></select>
+
+    <div class="container">
+      <h3>اختر رقمك للمشاركة في القرعة</h3>
+      <div class="outer-grid" id="outerGrid"></div>
+      <div class="inner-grid" id="innerGrid"></div>
     </div>
+
+    <button type="submit">تسجيل</button>
+    <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
   </form>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAUYJ5jJypWSHA1sZUlQWLRYz1k51AIQIU",
-      authDomain: "sharol-707f4.firebaseapp.com",
-      projectId: "sharol-707f4",
-      storageBucket: "sharol-707f4.appspot.com",
-      messagingSenderId: "671741319957",
-      appId: "1:671741319957:web:e91ea4813e3d5dbab9e71c",
-      measurementId: "G-TDF02W6SL6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
+  <script>
     const ageSelect = document.getElementById('age');
     for (let i = 18; i <= 55; i++) {
       const opt = document.createElement('option');
@@ -167,44 +219,58 @@
       ageSelect.appendChild(opt);
     }
 
-    window.submitForm = async function(event) {
-      event.preventDefault();
-      const message = document.getElementById('message');
-      message.textContent = '';
-      message.className = '';
-
-      const data = {
-        fullName: document.getElementById('fullName').value.trim(),
-        phoneCode: document.getElementById('phoneCode').value,
-        phoneNumber: document.getElementById('phoneNumber').value.trim(),
-        country: document.getElementById('country').value,
-        jobStatus: document.getElementById('jobStatus').value,
-        age: document.getElementById('age').value,
-        createdAt: new Date().toISOString()
-      };
-
-      if (Object.values(data).some(v => !v)) {
-        message.textContent = 'الرجاء تعبئة جميع الحقول';
-        message.className = 'fail';
-        return;
+    function validateForm() {
+      const fields = ['fullName', 'phoneCode', 'phoneNumber', 'country', 'jobStatus', 'age'];
+      let valid = true;
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('error');
+        if (!el.value.trim()) {
+          el.classList.add('error');
+          valid = false;
+        }
+      });
+      if (!selectedNumber) {
+        alert('يرجى اختيار رقم للمشاركة.');
+        valid = false;
       }
-
-      try {
-        await addDoc(collection(db, "lottery-users"), data);
-        message.textContent = 'تم التسجيل بنجاح';
-        message.className = 'success';
-        setTimeout(() => {
-          window.location.href = 'roulette.html';
-        }, 1500);
-      } catch (err) {
-        console.error(err);
-        message.textContent = 'حدث خطأ أثناء التسجيل';
-        message.className = 'fail';
-      }
+      return valid;
     }
 
-    window.continueAsGuest = function() {
+    function continueAsGuest() {
       window.location.href = 'roulette.html?guest=true';
+    }
+
+    const rouletteNumbersOuter = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+    const rouletteNumbersInner = [49,45,40,52,46,59,55,61,50,53,44,63,42,60,57,43,58,41,48,62,39,47,64,51,38,56,66,65,68,54,67,69,71,70,72,74,73];
+    const outerGrid = document.getElementById('outerGrid');
+    const innerGrid = document.getElementById('innerGrid');
+    let selectedNumber = null;
+
+    rouletteNumbersOuter.forEach((num, i) => {
+      outerGrid.appendChild(createCell(num, i));
+    });
+    rouletteNumbersInner.forEach((num, i) => {
+      innerGrid.appendChild(createCell(num, i));
+    });
+
+    function createCell(number, index) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.textContent = number;
+      if (number === 0 || number === 49) {
+        cell.classList.add('green');
+      } else if (index % 2 === 0) {
+        cell.classList.add('red');
+      }
+      cell.addEventListener('click', () => {
+        if (cell.classList.contains('reserved')) return;
+        document.querySelectorAll('.cell').forEach(c => c.classList.remove('reserved'));
+        cell.classList.add('reserved');
+        selectedNumber = number;
+        localStorage.setItem('reservedNumber', number);
+      });
+      return cell;
     }
   </script>
 </body>
