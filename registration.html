@@ -18,14 +18,12 @@
       justify-content: flex-start;
       min-height: 100vh;
     }
-
     h1 {
       color: gold;
       text-shadow: 0 0 8px gold;
       margin-top: 20px;
       font-size: 24px;
     }
-
     form {
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid gold;
@@ -36,26 +34,22 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
       position: relative;
     }
-
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
       color: gold;
     }
-
     .flex-row {
       display: flex;
       gap: 10px;
       margin-bottom: 15px;
     }
-
     .flex-row > div {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
-
     input, select {
       width: 100%;
       padding: 8px;
@@ -68,11 +62,9 @@
       box-sizing: border-box;
       margin-bottom: 15px;
     }
-
     input::placeholder {
       color: #ccc;
     }
-
     button {
       display: inline-block;
       padding: 10px 20px;
@@ -88,34 +80,27 @@
       margin-top: 5px;
       margin-right: 10px;
     }
-
     button:hover {
       background: darkgoldenrod;
     }
-
     .payment-section {
       margin-bottom: 15px;
     }
-
     #message {
       text-align: center;
       font-size: 14px;
       margin-bottom: 10px;
       min-height: 20px;
     }
-
     .error {
       border: 2px solid red !important;
     }
-
     .success {
       color: lime;
     }
-
     .fail {
       color: #f33;
     }
-
     .container {
       margin: 20px auto;
       padding: 10px;
@@ -123,7 +108,6 @@
       width: 95%;
       box-sizing: border-box;
     }
-
     .outer-grid, .inner-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
@@ -131,7 +115,6 @@
       justify-items: center;
       margin-top: 10px;
     }
-
     .cell {
       padding: 8px;
       font-size: 14px;
@@ -146,7 +129,6 @@
       transition: all 0.3s ease-in-out;
       min-width: 40px;
     }
-
     .cell.red { color: red; }
     .cell.green { color: lime; }
     .cell.reserved {
@@ -159,7 +141,12 @@
 </head>
 <body>
   <h1>نموذج التسجيل في القرعة</h1>
-  <form id="registrationForm" onsubmit="return validateForm()">
+
+  <!--
+    ملاحظة: في onsubmit أزلنا action/POST واعتمدنا على handleSubmit
+    حتى نتحكم في الإرسال ونستخدم Firebase
+  -->
+  <form id="registrationForm" onsubmit="return handleSubmit(event)">
     <div id="message"></div>
 
     <label for="fullName">الاسم الكامل</label>
@@ -170,9 +157,10 @@
         <label for="phoneCode">كود الدولة</label>
         <select id="phoneCode" name="phoneCode" required>
           <option value="">اختر كود الدولة</option>
+          <option value="+966">+966 (السعودية)</option>
+          <option value="+971">+971 (الإمارات)</option>
           <option value="+963">+963 (سوريا)</option>
           <option value="+212">+212 (المغرب)</option>
-          <!-- أضف المزيد إن رغبت -->
         </select>
       </div>
       <div>
@@ -186,7 +174,8 @@
       <option value="">اختر الدولة</option>
       <option value="سوريا">سوريا</option>
       <option value="المغرب">المغرب</option>
-      <!-- أضف المزيد إن رغبت -->
+      <option value="السعودية">السعودية</option>
+      <option value="الإمارات">الإمارات</option>
     </select>
 
     <label for="jobStatus">الوضع الوظيفي</label>
@@ -210,7 +199,29 @@
     <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
   </form>
 
-  <script>
+  <!-- ربط Firebase في نهاية الصفحة -->
+  <script type="module">
+    /**************************************************
+     * 1) إعداد Firebase
+     **************************************************/
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUYJ5jJypWSHA1sZUlQWLRYz1k51AIQIU",
+      authDomain: "sharol-707f4.firebaseapp.com",
+      projectId: "sharol-707f4",
+      storageBucket: "sharol-707f4.appspot.com",
+      messagingSenderId: "671741319957",
+      appId: "1:671741319957:web:e91ea4813e3d5dbab9e71c",
+      measurementId: "G-TDF02W6SL6"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    /**************************************************
+     * 2) تعبئة قائمة العمر 18..55
+     **************************************************/
     const ageSelect = document.getElementById('age');
     for (let i = 18; i <= 55; i++) {
       const opt = document.createElement('option');
@@ -219,7 +230,105 @@
       ageSelect.appendChild(opt);
     }
 
-    function validateForm() {
+    /**************************************************
+     * 3) دالة المتابعة كزائر
+     **************************************************/
+    window.continueAsGuest = function() {
+      window.location.href = 'roulette.html?guest=true';
+    };
+
+    /**************************************************
+     * 4) الشبكتان الخارجية والداخلية
+     **************************************************/
+    const rouletteNumbersOuter = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+    const rouletteNumbersInner = [49,45,40,52,46,59,55,61,50,53,44,63,42,60,57,43,58,41,48,62,39,47,64,51,38,56,66,65,68,54,67,69,71,70,72,74,73];
+
+    const outerGrid = document.getElementById('outerGrid');
+    const innerGrid = document.getElementById('innerGrid');
+    let selectedNumber = null; // الرقم الذي يختاره المستخدم
+
+    // لجلب الأرقام المحجوزة مسبقًا من Firestore
+    let reservedSet = new Set();
+
+    // بتحميل الصفحة، نجلب الأرقام المحجوزة وننشئ الشبكتين
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadReservedNumbers();
+      buildGrids();
+    });
+
+    // جلب الأرقام المحجوزة من مجموعة lottery-users
+    async function loadReservedNumbers() {
+      try {
+        const snap = await getDocs(collection(db, 'lottery-users'));
+        snap.forEach(doc => {
+          const d = doc.data();
+          if (d.chosenNumber != null) {
+            reservedSet.add(parseInt(d.chosenNumber));
+          }
+        });
+      } catch (err) {
+        console.error('خطأ في جلب الأرقام المحجوزة:', err);
+      }
+    }
+
+    // إنشاء الخليتين الخارجية والداخلية
+    function buildGrids() {
+      outerGrid.innerHTML = '';
+      innerGrid.innerHTML = '';
+      rouletteNumbersOuter.forEach((num, i) => {
+        outerGrid.appendChild(createCell(num, i));
+      });
+      rouletteNumbersInner.forEach((num, i) => {
+        innerGrid.appendChild(createCell(num, i));
+      });
+    }
+
+    // دالة لإنشاء خلية
+    function createCell(number, index) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.textContent = number;
+
+      // تلوين خاص: 0 أو 49 باللون الأخضر
+      if (number === 0 || number === 49) {
+        cell.classList.add('green');
+      } else if (index % 2 === 0) {
+        // الأرقام الحمراء
+        cell.classList.add('red');
+      }
+
+      // لو الرقم محجوز مسبقًا
+      if (reservedSet.has(number)) {
+        cell.classList.add('reserved');
+      } else {
+        // السماح باختيار الرقم
+        cell.addEventListener('click', () => {
+          if (cell.classList.contains('reserved')) return;
+
+          // إلغاء تمييز أي خلية مختارة سابقًا
+          const allCells = document.querySelectorAll('.cell');
+          allCells.forEach(c => c.classList.remove('reserved'));
+
+          // تمييز الخلية الحالية
+          cell.classList.add('reserved');
+          selectedNumber = number;
+          // يمكنك تخزينه في localStorage إذا احتجت
+          // localStorage.setItem('reservedNumber', number);
+        });
+      }
+      return cell;
+    }
+
+    /**************************************************
+     * 5) دالة التحقق من الحقول + الحفظ في Firestore
+     **************************************************/
+    window.handleSubmit = async function(event) {
+      event.preventDefault();
+      const message = document.getElementById('message');
+      message.textContent = '';
+      message.className = '';
+
+      // تحقق من حقول الاستمارة
       const fields = ['fullName', 'phoneCode', 'phoneNumber', 'country', 'jobStatus', 'age'];
       let valid = true;
       fields.forEach(id => {
@@ -234,44 +343,40 @@
         alert('يرجى اختيار رقم للمشاركة.');
         valid = false;
       }
-      return valid;
-    }
+      if (!valid) return false;
 
-    function continueAsGuest() {
-      window.location.href = 'roulette.html?guest=true';
-    }
+      // جهز البيانات للحفظ
+      const data = {
+        fullName: document.getElementById('fullName').value.trim(),
+        phoneCode: document.getElementById('phoneCode').value,
+        phoneNumber: document.getElementById('phoneNumber').value.trim(),
+        country: document.getElementById('country').value,
+        jobStatus: document.getElementById('jobStatus').value,
+        age: document.getElementById('age').value,
+        chosenNumber: selectedNumber,
+        createdAt: new Date().toISOString()
+      };
 
-    const rouletteNumbersOuter = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
-    const rouletteNumbersInner = [49,45,40,52,46,59,55,61,50,53,44,63,42,60,57,43,58,41,48,62,39,47,64,51,38,56,66,65,68,54,67,69,71,70,72,74,73];
-    const outerGrid = document.getElementById('outerGrid');
-    const innerGrid = document.getElementById('innerGrid');
-    let selectedNumber = null;
+      try {
+        // أضف المستند لقاعدة البيانات
+        await addDoc(collection(db, 'lottery-users'), data);
 
-    rouletteNumbersOuter.forEach((num, i) => {
-      outerGrid.appendChild(createCell(num, i));
-    });
-    rouletteNumbersInner.forEach((num, i) => {
-      innerGrid.appendChild(createCell(num, i));
-    });
+        message.textContent = 'تم التسجيل بنجاح';
+        message.classList.add('success');
 
-    function createCell(number, index) {
-      const cell = document.createElement('div');
-      cell.classList.add('cell');
-      cell.textContent = number;
-      if (number === 0 || number === 49) {
-        cell.classList.add('green');
-      } else if (index % 2 === 0) {
-        cell.classList.add('red');
+        // إعادة توجيه بعد النجاح
+        setTimeout(() => {
+          window.location.href = 'roulette.html';
+        }, 1500);
+
+      } catch (err) {
+        console.error(err);
+        message.textContent = 'حدث خطأ أثناء التسجيل';
+        message.classList.add('fail');
       }
-      cell.addEventListener('click', () => {
-        if (cell.classList.contains('reserved')) return;
-        document.querySelectorAll('.cell').forEach(c => c.classList.remove('reserved'));
-        cell.classList.add('reserved');
-        selectedNumber = number;
-        localStorage.setItem('reservedNumber', number);
-      });
-      return cell;
+      return false;
     }
   </script>
 </body>
 </html>
+
