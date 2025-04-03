@@ -18,12 +18,14 @@
       justify-content: flex-start;
       min-height: 100vh;
     }
+
     h1 {
       color: gold;
       text-shadow: 0 0 8px gold;
       margin-top: 20px;
       font-size: 24px;
     }
+
     form {
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid gold;
@@ -34,22 +36,26 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
       position: relative;
     }
+
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
       color: gold;
     }
+
     .flex-row {
       display: flex;
       gap: 10px;
       margin-bottom: 15px;
     }
+
     .flex-row > div {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
+
     input, select {
       width: 100%;
       padding: 8px;
@@ -62,9 +68,11 @@
       box-sizing: border-box;
       margin-bottom: 15px;
     }
+
     input::placeholder {
       color: #ccc;
     }
+
     button {
       display: inline-block;
       padding: 10px 20px;
@@ -80,12 +88,15 @@
       margin-top: 5px;
       margin-right: 10px;
     }
+
     button:hover {
       background: darkgoldenrod;
     }
+
     .payment-section {
       margin-bottom: 15px;
     }
+
     /* رسالة الخطأ أو النجاح */
     #message {
       text-align: center;
@@ -93,129 +104,130 @@
       margin-bottom: 10px;
       min-height: 20px; /* لإبقاء المساحة ثابتة عند إخفاء الرسائل */
     }
+
     /* تنسيق الحقل الخاطئ */
     .error {
       border: 2px solid red !important;
     }
+
     .success {
       color: lime;
     }
+
     .fail {
       color: #f33;
+    }
+
+    /* تنسيق شبكة أرقام الروليت */
+    #rouletteSection {
+      display: none;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+    #rouletteSection h2 {
+      color: gold;
+      margin-bottom: 15px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .cell {
+      padding: 10px;
+      background: #333;
+      border: 1px solid gold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .cell:hover {
+      background: #444;
+    }
+    .cell.reserved {
+      background: gray;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
   <h1>نموذج التسجيل في القرعة</h1>
-  <!-- تم إزالة attribute action ليتولى JavaScript عملية الإرسال -->
-  <form id="registrationForm" onsubmit="return false;">
-    <div id="message"></div>
+  <!-- قسم التسجيل -->
+  <section id="registrationSection">
+    <form id="registrationForm" onsubmit="return validateForm()">
+      <div id="message"></div>
+      <!-- الاسم الكامل -->
+      <label for="fullName">الاسم الكامل</label>
+      <input type="text" id="fullName" name="fullName" placeholder="أدخل اسمك الكامل" required />
 
-    <!-- الاسم الكامل -->
-    <label for="fullName">الاسم الكامل</label>
-    <input
-      type="text"
-      id="fullName"
-      name="fullName"
-      placeholder="أدخل اسمك الكامل"
-      required
-    />
+      <!-- كود الدولة ورقم الهاتف -->
+      <div class="flex-row">
+        <div>
+          <label for="phoneCode">كود الدولة</label>
+          <select id="phoneCode" name="phoneCode" required>
+            <option value="">اختر كود الدولة</option>
+            <option value="+966">+966 (المملكة العربية السعودية)</option>
+            <option value="+971">+971 (الإمارات)</option>
+            <!-- باقي الخيارات -->
+          </select>
+        </div>
+        <div>
+          <label for="phoneNumber">رقم الهاتف</label>
+          <input type="text" id="phoneNumber" name="phoneNumber" placeholder="مثال: 5xxxxxxx" required />
+        </div>
+      </div>
 
-    <!-- كود الدولة ورقم الهاتف في سطر واحد -->
-    <div class="flex-row">
-      <div>
-        <label for="phoneCode">كود الدولة</label>
-        <select id="phoneCode" name="phoneCode" required>
-          <option value="">اختر كود الدولة</option>
-          <option value="+966">+966 (المملكة العربية السعودية)</option>
-          <option value="+971">+971 (الإمارات)</option>
-          <option value="+965">+965 (الكويت)</option>
-          <option value="+974">+974 (قطر)</option>
-          <option value="+973">+973 (البحرين)</option>
-          <option value="+968">+968 (عُمان)</option>
-          <option value="+964">+964 (العراق)</option>
-          <option value="+962">+962 (الأردن)</option>
-          <option value="+961">+961 (لبنان)</option>
-          <option value="+963">+963 (سوريا)</option>
-          <option value="+970">+970 (فلسطين)</option>
-          <option value="+20">+20 (مصر)</option>
-          <option value="+249">+249 (السودان)</option>
-          <option value="+218">+218 (ليبيا)</option>
-          <option value="+216">+216 (تونس)</option>
-          <option value="+213">+213 (الجزائر)</option>
-          <option value="+212">+212 (المغرب)</option>
-          <option value="+967">+967 (اليمن)</option>
+      <!-- الدولة -->
+      <label for="country">الدولة</label>
+      <select id="country" name="country" required>
+        <option value="">اختر الدولة</option>
+        <option value="المملكة العربية السعودية">المملكة العربية السعودية</option>
+        <option value="الإمارات العربية المتحدة">الإمارات العربية المتحدة</option>
+        <!-- باقي الخيارات -->
+      </select>
+
+      <!-- الوضع الوظيفي -->
+      <label for="jobStatus">الوضع الوظيفي</label>
+      <select id="jobStatus" name="jobStatus" required>
+        <option value="">اختر</option>
+        <option value="موظف">موظف</option>
+        <option value="عاطل">عاطل</option>
+        <option value="طالب">طالب</option>
+      </select>
+
+      <!-- العمر (من 18 إلى 55) -->
+      <label for="age">العمر</label>
+      <select id="age" name="age" required>
+        <option value="">اختر العمر</option>
+        <!-- سيتم إضافة الخيارات ديناميكيًا -->
+      </select>
+
+      <!-- قسم الدفع (يمكن إخفاؤه إذا كانت المشاركة مجانية) -->
+      <div class="payment-section" id="paymentSection">
+        <label for="paymentMethod">طريقة الدفع</label>
+        <select id="paymentMethod" name="paymentMethod">
+          <option value="credit-card">بطاقة ائتمانية</option>
+          <option value="paypal">PayPal</option>
+          <option value="bank">تحويل بنكي</option>
         </select>
       </div>
-      <div>
-        <label for="phoneNumber">رقم الهاتف</label>
-        <input
-          type="text"
-          id="phoneNumber"
-          name="phoneNumber"
-          placeholder="مثال: 5xxxxxxx"
-          required
-        />
+
+      <div class="flex-row" style="justify-content: flex-start;">
+        <button type="submit">تسجيل</button>
+        <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
       </div>
+    </form>
+  </section>
+
+  <!-- قسم شبكة أرقام الروليت (يُعرض بعد التسجيل) -->
+  <section id="rouletteSection">
+    <h2>اختر رقمك</h2>
+    <div class="grid" id="numbersGrid">
+      <!-- سيتم تعبئة الأرقام ديناميكيًا -->
     </div>
-
-    <!-- الدولة -->
-    <label for="country">الدولة</label>
-    <select id="country" name="country" required>
-      <option value="">اختر الدولة</option>
-      <option value="المملكة العربية السعودية">المملكة العربية السعودية</option>
-      <option value="الإمارات العربية المتحدة">الإمارات العربية المتحدة</option>
-      <option value="الكويت">الكويت</option>
-      <option value="قطر">قطر</option>
-      <option value="البحرين">البحرين</option>
-      <option value="عمان">عُمان</option>
-      <option value="العراق">العراق</option>
-      <option value="الأردن">الأردن</option>
-      <option value="لبنان">لبنان</option>
-      <option value="سوريا">سوريا</option>
-      <option value="فلسطين">فلسطين</option>
-      <option value="مصر">مصر</option>
-      <option value="السودان">السودان</option>
-      <option value="ليبيا">ليبيا</option>
-      <option value="تونس">تونس</option>
-      <option value="الجزائر">الجزائر</option>
-      <option value="المغرب">المغرب</option>
-      <option value="اليمن">اليمن</option>
-    </select>
-
-    <!-- الوضع الوظيفي -->
-    <label for="jobStatus">الوضع الوظيفي</label>
-    <select id="jobStatus" name="jobStatus" required>
-      <option value="">اختر</option>
-      <option value="موظف">موظف</option>
-      <option value="عاطل">عاطل</option>
-      <option value="طالب">طالب</option>
-    </select>
-
-    <!-- العمر (من 18 إلى 55) -->
-    <label for="age">العمر</label>
-    <select id="age" name="age" required>
-      <option value="">اختر العمر</option>
-      <!-- يتم إضافة الخيارات 18 إلى 55 ديناميكيًا -->
-    </select>
-
-    <!-- قسم الدفع (يمكن إخفاؤه عند الحاجة) -->
-    <div class="payment-section" id="paymentSection">
-      <label for="paymentMethod">طريقة الدفع</label>
-      <select id="paymentMethod" name="paymentMethod">
-        <option value="credit-card">بطاقة ائتمانية</option>
-        <option value="paypal">PayPal</option>
-        <option value="bank">تحويل بنكي</option>
-      </select>
-    </div>
-
-    <div class="flex-row" style="justify-content: flex-start;">
-      <!-- زر إرسال النموذج -->
-      <button type="submit">تسجيل</button>
-      <!-- زر المتابعة كزائر لا يرسل النموذج -->
-      <button type="button" onclick="continueAsGuest()">متابعة كزائر</button>
-    </div>
-  </form>
+  </section>
 
   <script>
     // إضافة خيارات العمر (18 إلى 55) ديناميكيًا
@@ -227,32 +239,20 @@
       ageSelect.appendChild(opt);
     }
 
-    // تحكم في تفعيل/تعطيل الدفع
-    const paymentEnabled = false; // تعديل إلى false إذا كانت المشاركة مجانية
+    // تحكم في عرض قسم الدفع (إذا كانت المشاركة مجانية)
+    const paymentEnabled = false;
     const paymentSection = document.getElementById('paymentSection');
     if (!paymentEnabled) {
       paymentSection.style.display = 'none';
     }
 
-    // دالة المتابعة كزائر
-    function continueAsGuest() {
-      window.location.href = 'roulette.html?guest=true';
-    }
-
-    // دالة التحقق من صحة النموذج قبل الإرسال (للتأكيد فقط)
+    // التحقق من صحة النموذج قبل الإرسال
     function validateForm() {
       const message = document.getElementById('message');
       message.textContent = '';
       message.className = '';
 
-      const requiredFields = [
-        'fullName',
-        'phoneCode',
-        'phoneNumber',
-        'country',
-        'jobStatus',
-        'age'
-      ];
+      const requiredFields = ['fullName', 'phoneCode', 'phoneNumber', 'country', 'jobStatus', 'age'];
       if (paymentEnabled) {
         requiredFields.push('paymentMethod');
       }
@@ -272,62 +272,116 @@
         message.classList.add('fail');
         return false;
       }
-      return true;
+      // منع الإرسال التقليدي لنموذج HTML؛ سنستخدم Firebase للتسجيل
+      return false;
+    }
+
+    // زر المتابعة كزائر (يمكنك تعديلها حسب الحاجة)
+    function continueAsGuest() {
+      // انتقل مباشرة لصفحة الروليت
+      document.getElementById('registrationSection').style.display = 'none';
+      document.getElementById('rouletteSection').style.display = 'block';
+      initializeRouletteGrid();
     }
   </script>
 
   <!-- تضمين إعدادات Firebase من ملف خارجي -->
   <script type="module" src="firebase-config.js"></script>
-
-  <!-- كود التسجيل باستخدام Firebase Firestore -->
+  <!-- كود التسجيل وحجز الرقم باستخدام Firebase Firestore -->
   <script type="module">
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
     import { app } from "./firebase-config.js";
-    
-    const db = getFirestore(app);
-    const registrationForm = document.getElementById("registrationForm");
-    const messageEl = document.getElementById("message");
 
-    // التقاط حدث الإرسال للنموذج
-    registrationForm.addEventListener("submit", async (e) => {
-      e.preventDefault(); // منع الإرسال الافتراضي
-      messageEl.textContent = '';
-      
-      // تحقق من صحة النموذج قبل المتابعة
-      if (!validateForm()) return;
-      
-      // جمع بيانات النموذج
-      const fullName = document.getElementById("fullName").value;
-      const phoneCode = document.getElementById("phoneCode").value;
-      const phoneNumber = document.getElementById("phoneNumber").value;
-      const country = document.getElementById("country").value;
-      const jobStatus = document.getElementById("jobStatus").value;
-      const age = document.getElementById("age").value;
-      let paymentMethod = "";
-      if (paymentEnabled) {
-        paymentMethod = document.getElementById("paymentMethod").value;
-      }
-      
-      // إنشاء سجل التسجيل في Firestore
+    const db = getFirestore(app);
+
+    // متغير لتخزين معرّف التسجيل (سنستخدمه لاحقًا عند حجز الرقم)
+    let registrationId = null;
+    // متغير للتحقق مما إذا تم حجز رقم بالفعل
+    let hasReserved = false;
+
+    // دالة للتعامل مع تسجيل المستخدم في القرعة باستخدام Firebase
+    async function registerUserInFirebase(formData) {
       try {
+        // على سبيل المثال، نقوم بتسجيل البيانات في مجموعة "registrations"
         const docRef = await addDoc(collection(db, "registrations"), {
-          fullName,
-          phoneCode,
-          phoneNumber,
-          country,
-          jobStatus,
-          age,
-          paymentMethod,
+          fullName: formData.fullName,
+          phoneCode: formData.phoneCode,
+          phoneNumber: formData.phoneNumber,
+          country: formData.country,
+          jobStatus: formData.jobStatus,
+          age: formData.age,
+          paymentMethod: formData.paymentMethod || null,
           registeredAt: new Date().toISOString()
         });
-        messageEl.style.color = "green";
-        messageEl.textContent = "تم التسجيل بنجاح! معرف التسجيل: " + docRef.id;
-        registrationForm.reset();
+        registrationId = docRef.id;
+        document.getElementById('message').style.color = "green";
+        document.getElementById('message').textContent = "تم التسجيل بنجاح!";
+        // بعد التسجيل بنجاح، إخفاء قسم التسجيل وعرض قسم الروليت
+        document.getElementById('registrationSection').style.display = 'none';
+        document.getElementById('rouletteSection').style.display = 'block';
+        initializeRouletteGrid();
       } catch (error) {
-        messageEl.style.color = "red";
-        messageEl.textContent = "حدث خطأ: " + error.message;
+        document.getElementById('message').style.color = "red";
+        document.getElementById('message').textContent = "حدث خطأ في التسجيل: " + error.message;
+        console.error("Registration error:", error);
+      }
+    }
+
+    // التقاط حدث تقديم النموذج (بدلاً من الإرسال التقليدي)
+    document.getElementById('registrationForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateForm()) {
+        // جمع بيانات النموذج
+        const formData = {
+          fullName: document.getElementById('fullName').value.trim(),
+          phoneCode: document.getElementById('phoneCode').value.trim(),
+          phoneNumber: document.getElementById('phoneNumber').value.trim(),
+          country: document.getElementById('country').value.trim(),
+          jobStatus: document.getElementById('jobStatus').value.trim(),
+          age: document.getElementById('age').value.trim(),
+          paymentMethod: paymentEnabled ? document.getElementById('paymentMethod').value.trim() : null,
+        };
+        registerUserInFirebase(formData);
       }
     });
+
+    // دالة لإنشاء شبكة أرقام الروليت
+    function initializeRouletteGrid() {
+      // يمكنك تغيير مجموعة الأرقام حسب التصميم المطلوب؛ هنا مثال على بعض الأرقام
+      const numbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27];
+      const grid = document.getElementById('numbersGrid');
+      grid.innerHTML = ''; // تفريغ المحتوى السابق إن وجد
+      numbers.forEach(num => {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.textContent = num;
+        cell.addEventListener('click', () => handleNumberReservation(cell, num));
+        grid.appendChild(cell);
+      });
+    }
+
+    // دالة لمعالجة حجز رقم من شبكة الروليت
+    function handleNumberReservation(cell, chosenNumber) {
+      if (hasReserved) {
+        alert("لقد قمت بحجز رقم بالفعل.");
+        return;
+      }
+      // إضافة سجل إلى مجموعة "reservations" لتسجيل حجز الرقم مع معرّف التسجيل
+      addDoc(collection(db, "reservations"), {
+        registrationId: registrationId,
+        reservedNumber: chosenNumber,
+        reservedAt: new Date().toISOString()
+      })
+      .then(docRef => {
+        hasReserved = true;
+        cell.classList.add('reserved');
+        alert("تم حجز الرقم " + chosenNumber);
+      })
+      .catch(error => {
+        alert("حدث خطأ أثناء حجز الرقم: " + error.message);
+        console.error("Reservation error:", error);
+      });
+    }
   </script>
 </body>
 </html>
