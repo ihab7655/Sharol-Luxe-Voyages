@@ -234,7 +234,46 @@
     </div>
   </form>
 
-  <script>
+  <script type="module">
+  import { db } from './firebase-config.js';
+  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const form = document.getElementById('registrationForm');
+  const message = document.getElementById('message');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault(); // منع الإرسال العادي
+
+    // جمع البيانات من النموذج
+    const data = {
+      fullName: document.getElementById('fullName').value,
+      phoneCode: document.getElementById('phoneCode').value,
+      phoneNumber: document.getElementById('phoneNumber').value,
+      country: document.getElementById('country').value,
+      jobStatus: document.getElementById('jobStatus').value,
+      age: document.getElementById('age').value,
+      paymentMethod: document.getElementById('paymentMethod')?.value || 'N/A',
+      timestamp: new Date()
+    };
+
+    try {
+      await addDoc(collection(db, "lottery-users"), data); // ← هنا اسم المجموعة
+      message.textContent = "✅ تم التسجيل بنجاح!";
+      message.className = "success";
+
+      // إعادة توجيه لصفحة الروليت مثلاً:
+      setTimeout(() => {
+        window.location.href = "roulette.html";
+      }, 1500);
+
+    } catch (error) {
+      message.textContent = "❌ حدث خطأ أثناء التسجيل.";
+      message.className = "fail";
+      console.error(error);
+    }
+  });
+
+
     // إضافة خيارات العمر (18..55) ديناميكيًا
     const ageSelect = document.getElementById('age');
     for (let i = 18; i <= 55; i++) {
