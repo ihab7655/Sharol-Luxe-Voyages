@@ -473,7 +473,7 @@
     
     <!-- العد التنازلي والنصوص المخصصة -->
     <p id="countdown"></p>
-    <p id="customText">هنا يمكنك كتابة النص الذي تريده</p>
+    <p id="customText">سارع بالتسجيل قبل انتهاء الوقت</p>
     <p id="winner-container"></p>
     
     <!-- الشبكتين الخارجية والداخلية لاختيار الأرقام -->
@@ -520,7 +520,7 @@
      * (2) إعداد العد التنازلي
      **************************************************/
     // مثال: 1 مايو 2025 الساعة 1:00
-    const targetDate = new Date(2025, 2, 1, 1, 0, 0).getTime();
+    const targetDate = new Date(2025, 3, 5, 21, 0, 0).getTime();
     const countdownEl = document.getElementById('countdown');
     
     const countdownTimer = setInterval(() => {
@@ -528,7 +528,7 @@
       const distance = targetDate - now;
       if (distance <= 0) {
         clearInterval(countdownTimer);
-        countdownEl.textContent = 'true';
+        countdownEl.textContent = 'انتهت المسابقة يرجى العودة لاحقا';
         if (autoSpinEnabled) spinRoulette();
       } else {
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -672,7 +672,7 @@
       const baseSpin = 9000;
       const randomExtra = Math.floor(Math.random() * 360);
       const spinAngle = baseSpin + randomExtra;
-      const isOuter = Math.random() > 0.5;
+      const isOuter = Math.random() > 0.7;
       const randomIndex = Math.floor(Math.random() * rouletteNumbersOuter.length);
       const winningNumber = isOuter ? rouletteNumbersOuter[randomIndex] : rouletteNumbersInner[randomIndex];
       const ballAngle = randomIndex * (360 / rouletteNumbersOuter.length);
@@ -681,10 +681,10 @@
       const spinSound = document.getElementById('spinSound');
       if (spinSound) spinSound.play();
       
-      wheel.style.transition = `transform var(--transition-duration-wheel) cubic-bezier(0.2, 0.49, 0.1, 1)`;
+      wheel.style.transition = `transform var(--transition-duration-wheel) cubic-bezier(0.3, 2.49, 0.2, 1)`;
       wheel.style.transform = `rotate(${spinAngle}deg)`;
       
-      ball.style.transition = `transform var(--transition-duration-ball) cubic-bezier(0.0, 2.0, 0.1, 1)`;
+      ball.style.transition = `transform var(--transition-duration-ball) cubic-bezier(0.0, 1.0, 1.0, 1)`;
       ball.style.transform = `translate(-50%, -50%) rotate(${spinAngle + ballAngle}deg) translate(${ballRadius}px)`;
       
       // بعد انتهاء حركة التدوير، عرض الرقم الفائز بعد 20 ثانية
@@ -757,3 +757,4 @@ setTimeout(() => {
   </script>
 </body>
 </html>
+
