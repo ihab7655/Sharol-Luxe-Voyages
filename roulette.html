@@ -668,72 +668,69 @@
      * (6) دالة تدوير العجلة (spinRoulette)
      **************************************************/
     function spinRoulette() {
-      stopHighlightCycle();
-      const baseSpin = 9000;
-      const randomExtra = Math.floor(Math.random() * 360);
-      const spinAngle = baseSpin + randomExtra;
-      const isOuter = Math.random() > 0.7;
-      const randomIndex = Math.floor(Math.random() * rouletteNumbersOuter.length);
-      const winningNumber = isOuter ? rouletteNumbersOuter[randomIndex] : rouletteNumbersInner[randomIndex];
-      const ballAngle = randomIndex * (360 / rouletteNumbersOuter.length);
-      const ballRadius = isOuter ? 165 : 135;
-      
-      const spinSound = document.getElementById('spinSound');
-      if (spinSound) spinSound.play();
-      
-      wheel.style.transition = `transform var(--transition-duration-wheel) cubic-bezier(0.3, 2.49, 0.2, 1)`;
-      wheel.style.transform = `rotate(${spinAngle}deg)`;
-      
-      ball.style.transition = `transform var(--transition-duration-ball) cubic-bezier(0.0, 1.0, 1.0, 1)`;
-      ball.style.transform = `translate(-50%, -50%) rotate(${spinAngle + ballAngle}deg) translate(${ballRadius}px)`;
-      
-      // بعد انتهاء حركة التدوير، عرض الرقم الفائز بعد 20 ثانية
-      setTimeout(() => {
-        const winnerContainer = document.getElementById('winner-container');
-        winnerContainer.textContent = `🎉 الرقم الفائز هو: ${winningNumber} (${isOuter ? "الخارجي" : "الداخلي"}) 🎉`;
-        highlightWinningNumber(winningNumber, isOuter);
-        
-        const winSound = document.getElementById('winSound');
-        if (winSound) winSound.play();
-        
-        // عرض نافذة الفوز في رأس الموقع
-       const winPopup = document.getElementById('winPopup');
-winPopup.textContent = `🎉 فزت بالرقم ${winningNumber} 🎉`;
-winPopup.style.display = 'block';
+  stopHighlightCycle();
 
-setTimeout(() => {
-  winPopup.style.display = 'none';
-}, 6000);
+  const fixedWinningNumber = 7;
+  const isOuter = true;
+  const winningIndex = rouletteNumbersOuter.indexOf(fixedWinningNumber);
 
-        
-        // إيقاف صوت دوران العجلة بعد التوقف
-        if (spinSound) {
-          spinSound.pause();
-          spinSound.currentTime = 0;
-        }
-        
-        // تشغيل تأثير البرق فوق عجلة الروليت
-        const lightningWheel = document.getElementById('lightningOverWheel');
-        lightningWheel.classList.add('active');
-        setTimeout(() => {
-          lightningWheel.classList.remove('active');
-        }, 1000);
-      }, 20000);
-      
-      setTimeout(() => startHighlightCycle(), 23000);
-      
-      setTimeout(() => {
-        document.querySelectorAll('.outer-grid .cell, .inner-grid .cell').forEach(cell => {
-          cell.classList.remove('reserved', 'winning');
-        });
-        document.querySelectorAll('.number-text').forEach(nt => nt.classList.remove('winning'));
-        wheel.style.transition = "none";
-        wheel.style.transform = "rotate(0deg)";
-        ball.style.transition = "none";
-        ball.style.transform = "translate(-50%, -50%)";
-        document.getElementById('winner-container').textContent = "";
-      }, 33000);
+  const baseSpin = 9000;
+  const spinAngle = baseSpin;
+  const ballAngle = winningIndex * (360 / rouletteNumbersOuter.length);
+  const ballRadius = isOuter ? 165 : 135;
+
+  const spinSound = document.getElementById('spinSound');
+  if (spinSound) spinSound.play();
+
+  wheel.style.transition = `transform var(--transition-duration-wheel) cubic-bezier(0.3, 2.49, 0.2, 1)`;
+  wheel.style.transform = `rotate(${spinAngle}deg)`;
+
+  ball.style.transition = `transform var(--transition-duration-ball) cubic-bezier(0.0, 1.0, 1.0, 1)`;
+  ball.style.transform = `translate(-50%, -50%) rotate(${spinAngle + ballAngle}deg) translate(${ballRadius}px)`;
+
+  setTimeout(() => {
+    const winnerContainer = document.getElementById('winner-container');
+    winnerContainer.textContent = `🎉 الرقم الفائز هو: ${fixedWinningNumber} (الخارجي) 🎉`;
+    highlightWinningNumber(fixedWinningNumber, isOuter);
+
+    const winSound = document.getElementById('winSound');
+    if (winSound) winSound.play();
+
+    const winPopup = document.getElementById('winPopup');
+    winPopup.textContent = `🎉 فزت بالرقم ${fixedWinningNumber} 🎉`;
+    winPopup.style.display = 'block';
+
+    setTimeout(() => {
+      winPopup.style.display = 'none';
+    }, 6000);
+
+    if (spinSound) {
+      spinSound.pause();
+      spinSound.currentTime = 0;
     }
+
+    const lightningWheel = document.getElementById('lightningOverWheel');
+    lightningWheel.classList.add('active');
+    setTimeout(() => {
+      lightningWheel.classList.remove('active');
+    }, 1000);
+  }, 20000);
+
+  setTimeout(() => startHighlightCycle(), 23000);
+
+  setTimeout(() => {
+    document.querySelectorAll('.outer-grid .cell, .inner-grid .cell').forEach(cell => {
+      cell.classList.remove('reserved', 'winning');
+    });
+    document.querySelectorAll('.number-text').forEach(nt => nt.classList.remove('winning'));
+    wheel.style.transition = "none";
+    wheel.style.transform = "rotate(0deg)";
+    ball.style.transition = "none";
+    ball.style.transform = "translate(-50%, -50%)";
+    document.getElementById('winner-container').textContent = "";
+  }, 33000);
+}
+
     
     function highlightWinningNumber(num, isOuter) {
       const circleSelector = isOuter ? '.numbers-outer .number-text' : '.numbers-inner .number-text';
@@ -757,4 +754,3 @@ setTimeout(() => {
   </script>
 </body>
 </html>
-
